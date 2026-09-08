@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <UseWpf>true</UseWpf>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>EFCoreHelper.Vsix</RootNamespace>
+    <AssemblyName>EFCoreHelper.Vsix</AssemblyName>
+    <CreateVsixContainer>true</CreateVsixContainer>
+    <DeployExtension>false</DeployExtension>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <ExtensionInstallationFolder>EFCoreHelper</ExtensionInstallationFolder>
+    <ResourceManifest>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(TargetFramework)\resources.json</ResourceManifest>
+    <CtoFileManifest>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(TargetFramework)\ctoFiles.json</CtoFileManifest>
+    <FileManifest>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(TargetFramework)\files.json</FileManifest>
+    <CtoCacheFile>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(TargetFramework)\mergeCto.cache</CtoCacheFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="source.extension.vsixmanifest" SubType="Designer" />
+    <None Include="publishManifest.json" />
+    <None Include="Properties\PublishProfiles\*.pubxml" />
+    <Content Include="Resources\Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <VSCTCompile Include="VSCommandTable.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.10.2185">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.527" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EFCoreHelper.Core\EFCoreHelper.Core.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyVsixToArtifacts" AfterTargets="CreateVsixContainer" Condition="Exists('$(TargetVsixContainer)')">
+    <Copy SourceFiles="$(TargetVsixContainer)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\artifacts" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="CopyVsixToPublishDir" AfterTargets="Publish" Condition="Exists('$(TargetVsixContainer)')">
+    <Copy SourceFiles="$(TargetVsixContainer)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != '' and Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
+
+</Project>

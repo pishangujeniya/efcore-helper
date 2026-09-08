@@ -1,0 +1,82 @@
+<platformUi:DialogWindow x:Class="EFCoreHelper.Vsix.Dialogs.OptimizeDbContextDialog"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+                          xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+                          Title="Optimize DbContext (Compiled Models)"
+                          Width="540" Height="470"
+                          WindowStartupLocation="CenterOwner"
+                          ShowInTaskbar="False"
+                          ResizeMode="NoResize"
+                          Background="{DynamicResource {x:Static shell:VsBrushes.WindowKey}}"
+                          Foreground="{DynamicResource {x:Static shell:VsBrushes.WindowTextKey}}">
+
+  <platformUi:DialogWindow.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Resources/Styles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </platformUi:DialogWindow.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- Main Dialog Content -->
+    <Grid Grid.Row="0" Margin="14,12,14,8">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <!-- Form Fields -->
+      <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <TextBlock Text="Target project (Migrations assembly):" Style="{StaticResource VsFieldLabelStyle}" />
+          <ComboBox x:Name="CmbProject" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" DisplayMemberPath="Name" Margin="0,0,0,10" SelectionChanged="OnFieldChanged" />
+
+          <TextBlock Text="DbContext class:" Style="{StaticResource VsFieldLabelStyle}" />
+          <ComboBox x:Name="CmbContext" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" ItemTemplate="{StaticResource DbContextItemTemplate}" Margin="0,0,0,10" SelectionChanged="OnFieldChanged" />
+
+          <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+              <TextBlock Text="Output folder:" Style="{StaticResource VsFieldLabelStyle}" />
+              <TextBox x:Name="TxtOutputDir" Text="CompiledModels" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.TextBoxStyleKey}}" TextChanged="OnFieldChanged" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Custom namespace (optional):" Style="{StaticResource VsFieldLabelStyle}" />
+              <TextBox x:Name="TxtNamespace" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.TextBoxStyleKey}}" TextChanged="OnFieldChanged" />
+            </StackPanel>
+          </Grid>
+
+          <CheckBox x:Name="ChkScaffoldModel" Content="Generate code from current DbContext (--scaffold-model)" IsChecked="True" Style="{DynamicResource {x:Static shell:VsResourceKeys.CheckBoxStyleKey}}" Margin="0,2,0,6" Checked="OnFieldChanged" Unchecked="OnFieldChanged" />
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- Command Line Preview -->
+      <StackPanel Grid.Row="1" Margin="0,8,0,0">
+        <TextBlock Text="Command preview:" Style="{StaticResource VsFieldLabelStyle}" />
+        <TextBox x:Name="TxtCommandPreview" Style="{StaticResource CommandPreviewStyle}" Height="46" />
+      </StackPanel>
+    </Grid>
+
+    <!-- Dialog Button Footer Bar -->
+    <Border Grid.Row="1" Padding="14,10" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="0,1,0,0">
+      <Grid>
+        <Button Content="Copy Command" HorizontalAlignment="Left" Click="OnCopyPreviewClicked" Style="{StaticResource SecondaryButtonStyle}" ToolTip="Copy CLI command to clipboard" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+          <Button x:Name="BtnOptimize" Content="Optimize" IsDefault="True" Click="OnOptimizeClicked" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0" Width="105" />
+          <Button Content="Cancel" IsCancel="True" Click="OnCancelClicked" Style="{StaticResource SecondaryButtonStyle}" Width="75" />
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</platformUi:DialogWindow>

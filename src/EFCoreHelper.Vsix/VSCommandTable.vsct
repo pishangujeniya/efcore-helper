@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidEFCoreHelperPackage">
+    <Menus>
+      <!-- Tools > Entity Framework Core SubMenu -->
+      <Menu guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenu" priority="0x0500" type="Menu">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsMenuGroup" />
+        <Strings>
+          <ButtonText>Entity Framework Core</ButtonText>
+          <MenuText>Entity Framework Core</MenuText>
+        </Strings>
+      </Menu>
+
+      <!-- Project Context Menu > EF Core SubMenu -->
+      <Menu guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenu" priority="0x0200" type="Menu">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectMenuGroup" />
+        <Strings>
+          <ButtonText>EF Core</ButtonText>
+          <MenuText>EF Core</MenuText>
+        </Strings>
+      </Menu>
+    </Menus>
+
+    <Groups>
+      <!-- Group in Tools menu -->
+      <Group guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
+
+      <!-- Group inside Tools > Entity Framework Core menu -->
+      <Group guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" priority="0x0100">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenu" />
+      </Group>
+
+      <!-- Group on Solution Explorer Project Node -->
+      <Group guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectMenuGroup" priority="0x0300">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+      </Group>
+
+      <!-- Group inside Project Context > EF Core menu -->
+      <Group guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenuGroup" priority="0x0100">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenu" />
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <!-- Open Tool Window -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidOpenToolWindow" priority="0x0100" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Entity Framework Core Tool Window</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Add Migration -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidAddMigration" priority="0x0101" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Add Migration...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Update Database -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidUpdateDatabase" priority="0x0102" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Update Database...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Remove Migration -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidRemoveMigration" priority="0x0103" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Remove Last Migration...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Script Migration -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidScriptMigration" priority="0x0104" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Generate Migration Script...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Bundle Migrations -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidBundleMigrations" priority="0x0105" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Bundle Migrations...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Scaffold DbContext -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidScaffoldDbContext" priority="0x0106" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Scaffold DbContext (Database First)...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Drop Database -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidDropDatabase" priority="0x0107" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Drop Database...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Optimize DbContext -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidOptimizeDbContext" priority="0x0108" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
+        <Strings>
+          <ButtonText>Optimize DbContext (Compiled Model)...</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Project Context Menu buttons -->
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidProjectAddMigration" priority="0x0101" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenuGroup" />
+        <Strings>
+          <ButtonText>Add Migration...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidProjectUpdateDatabase" priority="0x0102" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenuGroup" />
+        <Strings>
+          <ButtonText>Update Database...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidProjectScaffold" priority="0x0103" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenuGroup" />
+        <Strings>
+          <ButtonText>Scaffold DbContext...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidProjectOpenToolWindow" priority="0x0104" type="Button">
+        <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenuGroup" />
+        <Strings>
+          <ButtonText>Open EF Core Tool Window</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
+    </Bitmaps>
+  </Commands>
+
+  <CommandPlacements>
+    <CommandPlacement guid="guidEFCoreHelperPackageCmdSet" id="cmdidOpenToolWindow" priority="0x0100">
+      <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectMenuGroup" priority="0x0300">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
+    </CommandPlacement>
+  </CommandPlacements>
+
+  <KeyBindings>
+    <KeyBinding guid="guidEFCoreHelperPackageCmdSet" id="cmdidOpenToolWindow" editor="guidVSStd97" key1="E" mod1="Control Alt" key2="M" />
+  </KeyBindings>
+
+  <Symbols>
+    <GuidSymbol name="guidEFCoreHelperPackage" value="{e7498c19-7561-419a-9e1e-2fb0d5a37f26}" />
+
+    <GuidSymbol name="guidEFCoreHelperPackageCmdSet" value="{a29f8c12-8874-4b55-bfbb-41808605c03f}">
+      <IDSymbol name="EFCoreToolsMenuGroup" value="0x1020" />
+      <IDSymbol name="EFCoreToolsSubMenu" value="0x1021" />
+      <IDSymbol name="EFCoreToolsSubMenuGroup" value="0x1022" />
+      <IDSymbol name="EFCoreProjectMenuGroup" value="0x1030" />
+      <IDSymbol name="EFCoreProjectSubMenu" value="0x1031" />
+      <IDSymbol name="EFCoreProjectSubMenuGroup" value="0x1032" />
+
+      <IDSymbol name="cmdidOpenToolWindow" value="0x0100" />
+      <IDSymbol name="cmdidAddMigration" value="0x0101" />
+      <IDSymbol name="cmdidUpdateDatabase" value="0x0102" />
+      <IDSymbol name="cmdidRemoveMigration" value="0x0103" />
+      <IDSymbol name="cmdidScriptMigration" value="0x0104" />
+      <IDSymbol name="cmdidBundleMigrations" value="0x0105" />
+      <IDSymbol name="cmdidScaffoldDbContext" value="0x0106" />
+      <IDSymbol name="cmdidDropDatabase" value="0x0107" />
+      <IDSymbol name="cmdidOptimizeDbContext" value="0x0108" />
+
+      <IDSymbol name="cmdidProjectAddMigration" value="0x0201" />
+      <IDSymbol name="cmdidProjectUpdateDatabase" value="0x0202" />
+      <IDSymbol name="cmdidProjectScaffold" value="0x0203" />
+      <IDSymbol name="cmdidProjectOpenToolWindow" value="0x0204" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{46c3b6f0-d9d1-4389-9831-50e5eb3e85e5}">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
