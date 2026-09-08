@@ -14,7 +14,10 @@
   <img src="https://img.shields.io/badge/.NET%20Core-6.0%20%7C%208.0%20%7C%209.0%20%7C%2010.0-512BD4?style=flat-square&logo=dotnet" alt=".NET Core Supported" />
   <img src="https://img.shields.io/badge/Visual%20Studio-2022%20%2B-C152F9?style=flat-square&logo=visualstudio" alt="Visual Studio 2022+" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="MIT License" /></a>
-  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" /></a>
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/EF%20Core%20Helper%20Tool%20Window.png" alt="EF Core Helper Tool Window in Visual Studio" width="460" />
 </p>
 
 ---
@@ -74,11 +77,29 @@ Inspect the exact arguments before running, or click **Copy** to run it in your 
 - Output directory (`Migrations` default or custom path) and custom namespace override.
 - Build bypass (`--no-build`) and verbose diagnostics (`--verbose`).
 
+<p align="center">
+  <img src="assets/screenshots/Add%20Migration.png" alt="Add Migration Dialog" width="650" />
+</p>
+
 ### 4. ⚡ Update Database Dialog
 - Pick from `<Latest> (Apply all pending)`, `0 (Revert all migrations)`, or any specific migration in your history.
 - **Connection String Override**: Auto-populated from your project's `appsettings.json`, `appsettings.Development.json`, or enter custom connection strings.
+- Target project and startup project pickers with automatic solution scanning.
 
-### 5. 🏗️ DbContext Scaffolding Wizard (Database First)
+<p align="center">
+  <img src="assets/screenshots/Update%20Database.png" alt="Update Database Dialog" width="650" />
+</p>
+
+### 5. ↩️ Remove Last Migration Dialog
+- Safely rollback and remove the most recently added migration before applying it to your database.
+- **Force Removal** (`--force`): Forcefully revert the migration files even if already applied to a target database.
+- Real-time command preview ensures complete transparency before deletion.
+
+<p align="center">
+  <img src="assets/screenshots/Remove%20Last%20Migration.png" alt="Remove Last Migration Dialog" width="650" />
+</p>
+
+### 6. 🏗️ DbContext Scaffolding Wizard (Database First)
 - Quick presets for popular database providers:
   - **SQL Server** (`Microsoft.EntityFrameworkCore.SqlServer`)
   - **PostgreSQL** (`Npgsql.EntityFrameworkCore.PostgreSQL`)
@@ -90,11 +111,48 @@ Inspect the exact arguments before running, or click **Copy** to run it in your 
 - Filter by specific tables and schemas.
 - Options for Data Annotations (`--data-annotations`), Database Names (`--use-database-names`), Force overwrite (`--force`), and Singularization (`--no-pluralize`).
 
-### 6. 📜 Idempotent SQL Scripts & Executable Bundles
-- **Script Generation**: Generate migration scripts from a starting migration to a target migration, with `--idempotent` and `--no-transactions` toggles.
-- **Migration Bundles**: Compile standalone deployment executables (`dotnet ef migrations bundle`) targeting any runtime (`win-x64`, `linux-x64`, `osx-arm64`).
+<p align="center">
+  <img src="assets/screenshots/Scaffold.png" alt="Scaffold DbContext Wizard" width="680" />
+</p>
 
-### 7. 💻 Real-Time Execution Console
+### 7. 📜 Generate Idempotent SQL Scripts
+- Generate migration SQL scripts from any starting migration (`0 (Beginning of time)`) to a target migration (`<Latest>` or specific point in history).
+- **Idempotent Script** (`--idempotent`): Generates scripts safe to run against any database regardless of current migration state.
+- **Transaction Control** (`--no-transactions`): Allows disabling transaction wrapping for statements that cannot execute inside transactions.
+- Interactive file browser to save the generated `.sql` file directly.
+
+<p align="center">
+  <img src="assets/screenshots/Generate%20SQL%20Script.png" alt="Generate SQL Script Dialog" width="650" />
+</p>
+
+### 8. 📦 Create Migration Executable Bundles
+- Compile standalone deployment executables (`dotnet ef migrations bundle`) targeting any runtime (`win-x64`, `linux-x64`, `osx-arm64`).
+- Self-contained bundle option (`--self-contained`) for environments without the .NET SDK installed.
+- Force overwrite option (`--force`) to replace existing bundle binaries.
+
+<p align="center">
+  <img src="assets/screenshots/Create%20Migration%20Bundle.png" alt="Create Migration Bundle Dialog" width="650" />
+</p>
+
+### 9. 🗑️ Drop Database Safety Dialog
+- Guarded safety dialog to drop development or test databases cleanly.
+- **Dry Run Only** (`--dry-run`): Preview and test the drop command without destroying actual data.
+- **Force Drop** (`--force`): Bypass interactive confirmation prompts.
+
+<p align="center">
+  <img src="assets/screenshots/Drop%20Database.png" alt="Drop Database Dialog" width="650" />
+</p>
+
+### 10. 🚀 Optimize DbContext (Compiled Models)
+- Generate pre-compiled models (`dotnet ef dbcontext optimize`) to dramatically speed up DbContext startup times in production applications.
+- Custom target output folder (default `CompiledModels`) and namespace specification.
+- Option to scaffold code directly from the current model (`--scaffold-model`).
+
+<p align="center">
+  <img src="assets/screenshots/Optimize.png" alt="Optimize DbContext Dialog" width="650" />
+</p>
+
+### 11. 💻 Real-Time Execution Console
 - Watch `dotnet ef` output stream in real time with syntax coloring.
 - Visual execution state: **Ready** (gray), **Running** (yellow spinner), **Success** (green checkmark), **Failed** (red).
 - **Stop / Cancel** button to kill the active process tree safely if an operation hangs.
