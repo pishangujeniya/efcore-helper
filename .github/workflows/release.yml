@@ -87,7 +87,7 @@ jobs:
             $pattern = "(?ms)## \[$escapedVer\].*?(?=(?:## \[|\z))"
             if ($content -match $pattern) {
               $notes = $Matches[0].Trim()
-              Write-Host "Found release notes for version $ver:"
+              Write-Host "Found release notes for version: $ver"
               Write-Host $notes
               $notes | Set-Content $notesFile -Encoding utf8
             } else {
