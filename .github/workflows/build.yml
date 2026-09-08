@@ -1,0 +1,42 @@
+name: CI Build & Test
+
+on:
+  push:
+    branches: [ main, master, development ]
+  pull_request:
+    branches: [ main, master, development ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          8.0.x
+          9.0.x
+          10.0.x
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet Packages
+      run: dotnet restore EFCoreHelper.sln
+
+    - name: Run Core Unit Tests
+      run: dotnet test tests/EFCoreHelper.Core.Tests/EFCoreHelper.Core.Tests.csproj --configuration Release --verbosity normal
+
+    - name: Build Extension (VSIX)
+      run: powershell -ExecutionPolicy Bypass -File .\build.ps1 -Configuration Release
+
+    - name: Upload VSIX Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: EFCoreHelper-vsix
+        path: artifacts/EFCoreHelper.vsix
+        if-no-files-found: error

@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/ContosoUniversity/ContosoUniversity.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/EFCoreHelper.Core/EFCoreHelper.Core.csproj" />
+    <Project Path="src/EFCoreHelper.Vsix/EFCoreHelper.Vsix.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EFCoreHelper.Core.Tests/EFCoreHelper.Core.Tests.csproj" />
+  </Folder>
+</Solution>

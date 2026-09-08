@@ -1,0 +1,29 @@
+## Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## VSIX / VS SDK
+artifacts/
+*.vsix
+TestResults/
+*.log
+*.vsixmanifest.checksum
+
+## Rider & JetBrains
+.idea/
+*.DotSettings.user
+
+## OS Files
+.DS_Store
+Thumbs.db
