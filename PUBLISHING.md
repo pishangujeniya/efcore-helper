@@ -8,10 +8,10 @@ This guide outlines how releases are prepared using **GitHub Actions** and manua
 
 ```mermaid
 flowchart LR
-    A["1. Bump Version & Update CHANGELOG"] --> B["2. Push Tag (e.g. v1.0.4)"]
+    A["1. Bump Version & Update CHANGELOG"] --> B["2. Push Tag (e.g. v1.0.5)"]
     B --> C["3. GitHub Actions Builds VSIX & Creates Release"]
-    C --> D["4. Download VSIX from GitHub Release"]
     D --> E["5. Manually Upload to VS Marketplace Portal"]
+    C --> D["4. Download VSIX from GitHub Release"]
 ```
 
 1. **GitHub Actions**: Builds the extension, runs all unit tests, packages the VSIX container, extracts version release notes from `CHANGELOG.md`, and creates a GitHub Release with downloadable `.vsix` assets.
@@ -27,17 +27,17 @@ Before creating a new release:
 1. **Bump Version Number**:
    - In [`Directory.Build.props`](Directory.Build.props):
      ```xml
-     <VersionPrefix>1.0.4</VersionPrefix>
+     <VersionPrefix>1.0.5</VersionPrefix>
      ```
    - In [`src/EFCoreHelper.Vsix/source.extension.vsixmanifest`](src/EFCoreHelper.Vsix/source.extension.vsixmanifest):
      ```xml
-     <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.4" Language="en-US" Publisher="Pishang Ujeniya" />
+     <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.5" Language="en-US" Publisher="Pishang Ujeniya" />
      ```
 
 2. **Update CHANGELOG.md**:
    - Ensure a section exists for the new version in [`CHANGELOG.md`](CHANGELOG.md) following Keep a Changelog formatting:
      ```markdown
-     ## [1.0.4] - 2026-09-08
+     ## [1.0.5] - 2026-09-08
 
      ### Added
      - New feature description...
@@ -51,7 +51,7 @@ Before creating a new release:
 3. **Commit & Push Changes**:
    ```bash
    git add .
-   git commit -m "chore: prepare release v1.0.4"
+   git commit -m "chore: prepare release v1.0.5"
    git push origin main
    ```
 
@@ -64,8 +64,8 @@ You can trigger release preparation via either **Git Tag** or the **GitHub Actio
 ### Option A: Via Git Tag (Recommended)
 Tag your release commit and push the tag to GitHub:
 ```bash
-git tag v1.0.4
-git push origin v1.0.4
+git tag v1.0.5
+git push origin v1.0.5
 ```
 *The `release.yml` workflow will start automatically.*
 
@@ -75,7 +75,7 @@ git push origin v1.0.4
 3. In the left workflow list, select **Release & Prepare Assets**.
 4. Click **Run workflow** dropdown on the right:
    - **Branch**: `main`
-   - **Version string to release**: e.g. `1.0.4` (leave empty to infer from manifest)
+   - **Version string to release**: e.g. `1.0.5` (leave empty to infer from manifest)
    - Click **Run workflow**.
 
 ---
@@ -85,12 +85,12 @@ git push origin v1.0.4
 Once the workflow finishes (typically ~2 minutes):
 
 1. Go to **Releases** (`https://github.com/pishangujeniya/efcore-helper/releases`).
-2. Open the newly published release (e.g. `EF Core Helper v1.0.4`).
+2. Open the newly published release (e.g. `EF Core Helper v1.0.5`).
 3. Under **Assets**, download:
-   - `EFCoreHelper.vsix` (or `EFCoreHelper-v1.0.4.vsix`).
+   - `EFCoreHelper.vsix` (or `EFCoreHelper-v1.0.5.vsix`).
 
 > [!NOTE]
-> Alternatively, if you built the package locally using `.\build.ps1 -Configuration Release -Version 1.0.4`, the ready-to-upload VSIX is located at `artifacts/EFCoreHelper.vsix`.
+> Alternatively, if you built the package locally using `.\build.ps1 -Configuration Release -Version 1.0.5`, the ready-to-upload VSIX is located at `artifacts/EFCoreHelper.vsix`.
 
 ---
 
@@ -132,7 +132,7 @@ If you prefer building and packaging the VSIX locally on your machine without ru
 
 ```powershell
 # Restore, run tests, compile, and package VSIX
-powershell -ExecutionPolicy Bypass -File .\build.ps1 -Configuration Release -Version 1.0.4
+powershell -ExecutionPolicy Bypass -File .\build.ps1 -Configuration Release -Version 1.0.5
 ```
 
 The output package will be produced at:

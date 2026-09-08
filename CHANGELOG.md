@@ -5,6 +5,14 @@ All notable changes to **EF Core Helper for Visual Studio** will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-09-08
+
+### Fixed
+- **Marketplace Package Compliance**: Fixed Visual Studio Marketplace upload validation failures where container parts (`.dll`, `.pkgdef`, `LICENSE.txt`, `Icon.png`) were rejected as not listed in the package manifest.
+- **Explicit Manifest Asset Declarations**: Fully declared all package components, MEF components, and referenced runtime assemblies (`EFCoreHelper.Core.dll`, `Community.VisualStudio.Toolkit.dll`, `System.Text.Json.dll`, `System.Text.Encodings.Web.dll`, `Microsoft.Bcl.AsyncInterfaces.dll`) directly in `extension.vsixmanifest` `<Assets>`.
+- **VSIX v3 Manifest Generation**: Modernized the packaging pipeline in `build.ps1` to supply a structured files manifest to `VsixUtil`, producing fully compliant `manifest.json` and `catalog.json` descriptors registering all container parts.
+- **Automated Package Verification**: Added post-packaging Open Packaging Conventions (OPC) and `manifest.json` integrity validation to `build.ps1` to prevent incomplete VSIX uploads.
+
 ## [1.0.4] - 2026-09-08
 
 ### Added

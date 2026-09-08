@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>1.0.4</VersionPrefix>
+    <VersionPrefix>1.0.5</VersionPrefix>
     <Authors>Pishang Ujeniya</Authors>
     <Company>EFCoreHelper</Company>
     <Product>EF Core Helper for Visual Studio</Product>

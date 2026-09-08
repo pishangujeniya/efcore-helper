@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.4" Language="en-US" Publisher="Pishang Ujeniya" />
+    <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.5" Language="en-US" Publisher="Pishang Ujeniya" />
     <DisplayName>EF Core Helper</DisplayName>
     <Description xml:space="preserve">Comprehensive Entity Framework Core management tools built natively for Visual Studio. Interactive UI for Add Migration, Update Database, Scaffolding, Bundles, Scripts, and real-time CLI execution console for .NET Core projects.</Description>
     <MoreInfo>https://github.com/pishangujeniya/efcore-helper</MoreInfo>
