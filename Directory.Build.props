@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.0.4</VersionPrefix>
+    <Authors>Pishang Ujeniya</Authors>
+    <Company>EFCoreHelper</Company>
+    <Product>EF Core Helper for Visual Studio</Product>
+    <Copyright>Copyright (c) 2026 Pishang Ujeniya</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/pishangujeniya/efcore-helper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>

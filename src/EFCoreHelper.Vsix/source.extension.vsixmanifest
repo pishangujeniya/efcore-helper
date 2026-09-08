@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.4" Language="en-US" Publisher="Pishang Ujeniya" />
+    <DisplayName>EF Core Helper</DisplayName>
+    <Description xml:space="preserve">Comprehensive Entity Framework Core management tools built natively for Visual Studio. Interactive UI for Add Migration, Update Database, Scaffolding, Bundles, Scripts, and real-time CLI execution console for .NET Core projects.</Description>
+    <MoreInfo>https://github.com/pishangujeniya/efcore-helper</MoreInfo>
+    <License>LICENSE.txt</License>
+    <Icon>Resources\Icon.png</Icon>
+    <Tags>efcore, entity-framework, migrations, database, dotnet-ef, scaffolding, dbcontext, visual studio</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 19.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0, 19.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[17.0, 19.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName=".NET Framework" d:Source="Manual" Version="[4.8,)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0, 19.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+  </Assets>
+</PackageManifest>

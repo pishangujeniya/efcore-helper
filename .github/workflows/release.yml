@@ -1,0 +1,125 @@
+name: Release & Prepare Assets
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string to release (e.g. 1.0.4). If empty, inferred from Git tag or manifest.'
+        required: false
+        default: ''
+      draft:
+        description: 'Create as Draft release'
+        type: boolean
+        required: false
+        default: false
+      prerelease:
+        description: 'Create as Pre-release'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, Package & Prepare Release Assets
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine Version
+        id: get_version
+        shell: pwsh
+        run: |
+          $ver = "${{ github.event.inputs.version }}".Trim().TrimStart('v')
+          if (-not $ver -and $env:GITHUB_REF_NAME -match '^v?(\d+\.\d+\.\d+.*)$') {
+            $ver = $Matches[1]
+          }
+          if (-not $ver) {
+            $manifestPath = "src/EFCoreHelper.Vsix/source.extension.vsixmanifest"
+            if (Test-Path $manifestPath) {
+              $manifestXml = [xml](Get-Content $manifestPath)
+              $ver = $manifestXml.PackageManifest.Metadata.Identity.Version
+            }
+          }
+          if (-not $ver) {
+            $ver = "1.0.0"
+          }
+          Write-Host "Releasing Version: $ver"
+          "VSIX_VERSION=$ver" >> $env:GITHUB_ENV
+          "version=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Run Tests, Build & Package VSIX
+        shell: pwsh
+        run: |
+          .\build.ps1 -Configuration Release -Version "${{ env.VSIX_VERSION }}"
+
+      - name: Extract Release Notes from CHANGELOG.md
+        id: extract_notes
+        shell: pwsh
+        run: |
+          $ver = "${{ env.VSIX_VERSION }}"
+          $changelogPath = "CHANGELOG.md"
+          $notesFile = "release_notes.md"
+
+          if (Test-Path $changelogPath) {
+            $content = Get-Content $changelogPath -Raw
+            $escapedVer = [regex]::Escape($ver)
+            $pattern = "(?ms)## \[$escapedVer\].*?(?=(?:## \[|\z))"
+            if ($content -match $pattern) {
+              $notes = $Matches[0].Trim()
+              Write-Host "Found release notes for version $ver:"
+              Write-Host $notes
+              $notes | Set-Content $notesFile -Encoding utf8
+            } else {
+              Write-Host "Version $ver not found in CHANGELOG.md; generating default header."
+              "## EF Core Helper v$ver`n`nAutomated release build." | Set-Content $notesFile -Encoding utf8
+            }
+          } else {
+            "## EF Core Helper v$ver`n`nAutomated release build." | Set-Content $notesFile -Encoding utf8
+          }
+
+      - name: Prepare Named Assets
+        shell: pwsh
+        run: |
+          $ver = "${{ env.VSIX_VERSION }}"
+          Copy-Item -Path "artifacts/EFCoreHelper.vsix" -Destination "artifacts/EFCoreHelper-v$ver.vsix" -Force
+
+      - name: Upload Workflow Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: EFCoreHelper-v${{ env.VSIX_VERSION }}
+          path: artifacts/*.vsix
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: EF Core Helper v${{ env.VSIX_VERSION }}
+          tag_name: v${{ env.VSIX_VERSION }}
+          body_path: release_notes.md
+          files: |
+            artifacts/EFCoreHelper.vsix
+            artifacts/EFCoreHelper-v${{ env.VSIX_VERSION }}.vsix
+          draft: ${{ github.event.inputs.draft || false }}
+          prerelease: ${{ github.event.inputs.prerelease || false }}
+          generate_release_notes: false

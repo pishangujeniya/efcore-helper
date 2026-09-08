@@ -1,0 +1,33 @@
+## Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## VSIX / VS SDK
+artifacts/
+TestResults/
+*.log
+*.vsixmanifest.checksum
+*.pkgdef.txt
+# Ignore generated .vsix package files, but do not ignore .Vsix project directories
+*.vsix
+!*.Vsix/
+!*.vsix/
+
+## IDE and Editor files
+.idea/
+*.DotSettings.user
+
+## OS Files
+.DS_Store
+Thumbs.db

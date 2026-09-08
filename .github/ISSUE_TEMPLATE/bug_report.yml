@@ -1,0 +1,50 @@
+name: 🐛 Bug Report
+description: File a bug report to help us improve EF Core Helper
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: vs_version
+    attributes:
+      label: Visual Studio Version
+      description: What version of Visual Studio are you using? (e.g. VS 2022 Community 17.10)
+      placeholder: Visual Studio 2022 17.10
+    validations:
+      required: true
+  - type: input
+    id: dotnet_version
+    attributes:
+      label: .NET SDK & EF Core Version
+      description: What target framework is your project using? (e.g. .NET 8.0, EF Core 8.0.8)
+      placeholder: .NET 8.0, Microsoft.EntityFrameworkCore 8.0.8
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Open EF Core tool window
+        2. Click 'Add Migration'
+        3. Enter 'TestMigration'
+        4. See error in Execution Console
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Execution Console Output / Logs
+      description: Please copy and paste any relevant logs from the EF Core Execution Console or VS Output Window.
+      render: shell

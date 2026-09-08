@@ -1,0 +1,181 @@
+<UserControl x:Class="EFCoreHelper.Vsix.ToolWindows.EfCoreToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}"
+             Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Resources/Styles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" /> <!-- Context Selectors -->
+      <RowDefinition Height="Auto" /> <!-- Diagnostics Banner -->
+      <RowDefinition Height="Auto" /> <!-- Action Toolbar -->
+      <RowDefinition Height="*" />    <!-- Main Content (Explorer & Console Tabs) -->
+      <RowDefinition Height="Auto" /> <!-- Status Bar -->
+    </Grid.RowDefinitions>
+
+    <!-- 1. Solution & Project Selectors -->
+    <Border Grid.Row="0" Padding="8,6" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="0,0,0,1">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="8" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="8" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="8" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Target Project -->
+        <StackPanel Grid.Column="0">
+          <TextBlock Text="Target Project:" Style="{StaticResource VsFieldLabelStyle}" />
+          <ComboBox x:Name="CmbProject" Height="23" DisplayMemberPath="Name" MinWidth="85" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" SelectionChanged="OnProjectChanged" />
+        </StackPanel>
+
+        <!-- Startup Project -->
+        <StackPanel Grid.Column="2">
+          <TextBlock Text="Startup Project:" Style="{StaticResource VsFieldLabelStyle}" />
+          <ComboBox x:Name="CmbStartupProject" Height="23" DisplayMemberPath="Name" MinWidth="85" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" SelectionChanged="OnStartupProjectChanged" />
+        </StackPanel>
+
+        <!-- DbContext -->
+        <StackPanel Grid.Column="4">
+          <TextBlock Text="DbContext:" Style="{StaticResource VsFieldLabelStyle}" />
+          <ComboBox x:Name="CmbContext" Height="23" ItemTemplate="{StaticResource DbContextItemTemplate}" MinWidth="85" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" SelectionChanged="OnContextChanged" />
+        </StackPanel>
+
+        <!-- Refresh Button -->
+        <Button Grid.Column="6" Content="Refresh" VerticalAlignment="Bottom" Height="23" Padding="10,2" Click="OnRefreshClicked" Style="{StaticResource SecondaryButtonStyle}" ToolTip="Rescan the solution for .NET Core EF projects" />
+      </Grid>
+    </Border>
+
+    <!-- 2. Diagnostics & Environment Banner -->
+    <Border x:Name="BannerWarning" Grid.Row="1" Visibility="Collapsed" Background="#26D9822B" BorderBrush="{StaticResource WarningOrangeBrush}" BorderThickness="0,0,0,1" Padding="10,6">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="TxtBannerMessage" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" />
+        <Button x:Name="BtnBannerAction" Grid.Column="1" Margin="8,0,0,0" Padding="10,2" Height="23" Click="OnBannerActionClicked" Style="{StaticResource PrimaryButtonStyle}" />
+      </Grid>
+    </Border>
+
+    <!-- 3. Native Visual Studio Command Bar / Toolbar -->
+    <Border Grid.Row="2" Padding="4,2" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="0,0,0,1">
+      <WrapPanel>
+        <Button Content="Add Migration" Click="OnAddMigrationClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Add a new EF Core migration (dotnet ef migrations add)" />
+        <Button Content="Update Database" Click="OnUpdateDatabaseClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Apply migrations to database (dotnet ef database update)" />
+        <Button Content="Remove Migration" Click="OnRemoveMigrationClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Revert the last unapplied migration (dotnet ef migrations remove)" />
+        <Button Content="Generate Script" Click="OnScriptMigrationClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Generate idempotent SQL migration script (dotnet ef migrations script)" />
+        <Button Content="Bundle" Click="OnBundleMigrationsClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Build self-contained migration executable (dotnet ef migrations bundle)" />
+        <Button Content="Scaffold DbContext" Click="OnScaffoldDbContextClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Reverse engineer DbContext from database (dotnet ef dbcontext scaffold)" />
+        <Button Content="Drop Database" Click="OnDropDatabaseClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Drop target database (dotnet ef database drop)" />
+        <Button Content="Optimize" Click="OnOptimizeDbContextClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Generate compiled models for cold startup performance (dotnet ef dbcontext optimize)" />
+      </WrapPanel>
+    </Border>
+
+    <!-- 4. Main Tabbed Content -->
+    <TabControl x:Name="MainTabs" Grid.Row="3" Background="Transparent" BorderThickness="0" Margin="4,4,4,0">
+      <!-- Tab 1: Migrations List -->
+      <TabItem Header="Migrations" FontSize="11.5">
+        <Grid Margin="0,4,0,0">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+
+          <Grid Grid.Row="0" Margin="4,2,4,6">
+            <TextBlock Text="Migration History" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center" />
+            <TextBlock x:Name="TxtMigrationCount" HorizontalAlignment="Right" FontSize="11" Opacity="0.7" VerticalAlignment="Center" />
+          </Grid>
+
+          <!-- Migrations List -->
+          <ListBox x:Name="LstMigrations" Grid.Row="1" Background="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="1">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid Margin="4,3">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="11.5" />
+                    <TextBlock Text="{Binding MigrationId}" FontSize="10" Opacity="0.6" Margin="0,1,0,0" />
+                  </StackPanel>
+                  <TextBlock Grid.Column="1" Text="{Binding CreatedDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" FontSize="10.5" Opacity="0.6" VerticalAlignment="Center" Margin="8,0,0,0" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Update Database to This Migration" Click="OnContextUpdateToMigrationClicked" />
+                <MenuItem Header="Generate Script From Here" Click="OnContextScriptFromMigrationClicked" />
+              </ContextMenu>
+            </ListBox.ContextMenu>
+          </ListBox>
+        </Grid>
+      </TabItem>
+
+      <!-- Tab 2: Execution Console -->
+      <TabItem Header="Execution Console" FontSize="11.5">
+        <Grid Margin="0,4,0,0">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+
+          <!-- Console Control Bar -->
+          <Border Grid.Row="0" Padding="6,3" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="1,1,1,0">
+            <Grid>
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="Gray" Margin="0,0,6,0" />
+                <TextBlock x:Name="TxtConsoleStatus" Text="Ready" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="BtnCancelCommand" Content="Cancel" Click="OnCancelExecutionClicked" IsEnabled="False" Style="{StaticResource ToolbarActionButtonStyle}" Margin="0,0,4,0" ToolTip="Cancel the active command" />
+                <Button Content="Copy Output" Click="OnCopyLogClicked" Style="{StaticResource ToolbarActionButtonStyle}" Margin="0,0,4,0" ToolTip="Copy console output to clipboard" />
+                <Button Content="Clear" Click="OnClearLogClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Clear the console log" />
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <!-- Streaming Console Output -->
+          <TextBox x:Name="TxtConsoleOutput" Grid.Row="1"
+                   Background="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}"
+                   Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}"
+                   FontFamily="Consolas, Cascadia Code, Courier New"
+                   FontSize="11.5"
+                   IsReadOnly="True"
+                   TextWrapping="Wrap"
+                   VerticalScrollBarVisibility="Auto"
+                   HorizontalScrollBarVisibility="Auto"
+                   Padding="6"
+                   BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}"
+                   BorderThickness="1" />
+        </Grid>
+      </TabItem>
+    </TabControl>
+
+    <!-- 5. Status Bar -->
+    <Border Grid.Row="4" Padding="8,3" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="0,1,0,0">
+      <Grid>
+        <TextBlock x:Name="TxtFooterStatus" Text="EF Core Helper initialized." FontSize="11" Opacity="0.8" VerticalAlignment="Center" />
+        <TextBlock x:Name="TxtFooterToolVersion" HorizontalAlignment="Right" FontSize="10.5" Opacity="0.6" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/vsix-publish",
+  "categories": [
+    "Programming Languages",
+    "Data",
+    "Tools"
+  ],
+  "identity": {
+    "internalName": "EFCoreHelper"
+  },
+  "overview": "../../README.md",
+  "priceCategories": "free",
+  "publisher": "pishangujeniya",
+  "repo": "https://github.com/pishangujeniya/efcore-helper"
+}

@@ -1,0 +1,141 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0">
+
+  <!-- Status Feedback Brushes -->
+  <SolidColorBrush x:Key="SuccessGreenBrush" Color="#28A745" />
+  <SolidColorBrush x:Key="WarningOrangeBrush" Color="#D9822B" />
+  <SolidColorBrush x:Key="ErrorRedBrush" Color="#D13438" />
+
+  <!-- Native Visual Studio Field Label Style -->
+  <Style x:Key="VsFieldLabelStyle" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.WindowTextKey}}" />
+    <Setter Property="Margin" Value="0,0,0,3" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <!-- Native Visual Studio Section Header Style -->
+  <Style x:Key="VsSectionHeaderStyle" TargetType="TextBlock">
+    <Setter Property="FontSize" Value="11.5" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.WindowTextKey}}" />
+    <Setter Property="Margin" Value="0,6,0,4" />
+  </Style>
+
+  <!-- Native Visual Studio DbContext Drop-down Item Template -->
+  <DataTemplate x:Key="DbContextItemTemplate">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" />
+      <TextBlock Text="{Binding ProjectName, StringFormat=' ({0})'}" Opacity="0.65" FontSize="10" VerticalAlignment="Center" Margin="4,0,0,0" />
+    </StackPanel>
+  </DataTemplate>
+
+  <!-- Visual Studio Native Command Line Preview Box Style -->
+  <Style x:Key="CommandPreviewStyle" TargetType="TextBox">
+    <Setter Property="FontFamily" Value="Consolas, Cascadia Code, Courier New" />
+    <Setter Property="FontSize" Value="11.5" />
+    <Setter Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.WindowTextKey}}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="6,4" />
+    <Setter Property="IsReadOnly" Value="True" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+
+  <!-- Visual Studio Command Bar / Toolbar Button Style -->
+  <Style x:Key="ToolbarActionButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextActiveKey}}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="6,2" />
+    <Setter Property="Height" Value="23" />
+    <Setter Property="Margin" Value="1" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Border x:Name="border"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="2"
+                  Padding="{TemplateBinding Padding}">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarHoverOverSelectedKey}}" />
+              <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarSelectedKey}}" />
+              <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Opacity" Value="0.4" />
+              <Setter Property="Cursor" Value="Arrow" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Native Visual Studio Dialog Primary Button (e.g. OK / Add / Update) -->
+  <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ButtonFaceKey}}" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ButtonTextKey}}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="FontSize" Value="11.5" />
+    <Setter Property="MinWidth" Value="75" />
+    <Setter Property="Height" Value="23" />
+    <Setter Property="Padding" Value="10,2" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Border x:Name="border"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="2"
+                  Padding="{TemplateBinding Padding}">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarHoverOverSelectedKey}}" />
+              <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarSelectedKey}}" />
+            </Trigger>
+            <Trigger Property="IsDefault" Value="True">
+              <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.HighlightKey}}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Opacity" Value="0.4" />
+              <Setter Property="Cursor" Value="Arrow" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Native Visual Studio Dialog Secondary / Cancel Button -->
+  <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+    <Setter Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ButtonFaceKey}}" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ButtonTextKey}}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+    <Setter Property="MinWidth" Value="75" />
+    <Setter Property="Height" Value="23" />
+    <Setter Property="Padding" Value="10,2" />
+  </Style>
+
+</ResourceDictionary>
