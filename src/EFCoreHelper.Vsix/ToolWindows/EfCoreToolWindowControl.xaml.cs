@@ -65,33 +65,77 @@ namespace EFCoreHelper.Vsix.ToolWindows
             await RefreshSolutionAsync();
         }
 
+        private bool _isDotnetEfInstalled;
+
         private async Task CheckToolingAsync()
         {
             try
             {
+                TxtFooterToolVersion.Text = "Checking tools...";
+                BtnFooterUpdateTool.Visibility = Visibility.Collapsed;
+
                 var status = await _detector.CheckStatusAsync().ConfigureAwait(true);
                 if (!status.IsDotnetInstalled)
                 {
+                    _isDotnetEfInstalled = false;
                     ShowBanner(".NET CLI ('dotnet') was not found on PATH. Please install .NET Core SDK.", null, null);
+                    TxtFooterToolVersion.Text = ".NET CLI not found";
+                    BtnFooterUpdateTool.Visibility = Visibility.Collapsed;
                 }
                 else if (!status.IsDotnetEfInstalled)
                 {
+                    _isDotnetEfInstalled = false;
                     ShowBanner("The 'dotnet-ef' global tool is not installed. Click to install it now.", "Install dotnet-ef", async () =>
                     {
-                        await RunCommandLineAsync(_detector.GetInstallToolCommand());
-                        await CheckToolingAsync();
+                        await InstallOrUpdateToolAsync(isInstall: true);
                     });
+                    TxtFooterToolVersion.Text = "dotnet-ef: Not Installed";
+                    BtnFooterUpdateTool.Content = "Install";
+                    BtnFooterUpdateTool.ToolTip = "Install dotnet-ef global tool (dotnet tool install --global dotnet-ef)";
+                    BtnFooterUpdateTool.Visibility = Visibility.Visible;
+                }
+                else if (status.IsUpdateAvailable)
+                {
+                    _isDotnetEfInstalled = true;
+                    ShowBanner($"A newer version of dotnet-ef is available (v{status.LatestDotnetEfVersion}, installed v{status.DotnetEfVersion}). Click to update now.", "Update dotnet-ef", async () =>
+                    {
+                        await InstallOrUpdateToolAsync(isInstall: false);
+                    });
+                    TxtFooterToolVersion.Text = $"dotnet-ef v{status.DotnetEfVersion} (v{status.LatestDotnetEfVersion} available)";
+                    BtnFooterUpdateTool.Content = "Update";
+                    BtnFooterUpdateTool.ToolTip = $"Update dotnet-ef from v{status.DotnetEfVersion} to v{status.LatestDotnetEfVersion} (dotnet tool update --global dotnet-ef)";
+                    BtnFooterUpdateTool.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    BannerWarning.Visibility = Visibility.Collapsed;
+                    _isDotnetEfInstalled = true;
+                    if (BannerWarning.Visibility == Visibility.Visible && _bannerAction != null)
+                    {
+                        BannerWarning.Visibility = Visibility.Collapsed;
+                    }
                     TxtFooterToolVersion.Text = $"dotnet-ef v{status.DotnetEfVersion} (.NET v{status.DotnetVersion})";
+                    BtnFooterUpdateTool.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
             {
                 ShowBanner($"Error verifying EF Core tools: {ex.Message}", null, null);
             }
+        }
+
+        private async Task InstallOrUpdateToolAsync(bool isInstall)
+        {
+            string command = isInstall ? _detector.GetInstallToolCommand() : _detector.GetUpdateToolCommand();
+            MainTabs.SelectedIndex = 1; // Switch to Execution Console tab
+            await RunCommandLineAsync(command, null, async () =>
+            {
+                await CheckToolingAsync();
+            });
+        }
+
+        private async void OnUpdateDotnetEfClicked(object sender, RoutedEventArgs e)
+        {
+            await InstallOrUpdateToolAsync(isInstall: !_isDotnetEfInstalled);
         }
 
         private Action? _bannerAction;

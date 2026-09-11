@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2026-09-11
 
 ### Added
+- **Global `dotnet-ef` Tool Installation & Auto-Update**:
+  - Automatically detects whether the `dotnet-ef` CLI global tool is installed and checks NuGet for newer tool releases (non-blocking with quick timeout).
+  - One-click **Install dotnet-ef** banner and status bar action if the tool is missing from the developer's environment.
+  - One-click **Update dotnet-ef** action toolbar button and status bar indicator when an update is available, streaming live CLI execution directly into the Visual Studio Execution Console.
+- **Latest-First Migration Ordering**: Migrations are now sorted descending by creation timestamp by default across the migrations list and all target migration dropdowns (newest migrations at the top, oldest at the bottom).
 - **Native Vector Migration Glyphs**: Added crisp database migration vector icons to migration list items that cleanly adapt color and opacity to selection and theme states.
 - **Empty-State Placeholder**: Added an informative, theme-aware empty state overlay in the tool window when no migrations exist in the selected project.
 - **Themed Tool Window Tabs**: Created native Visual Studio `TabControl` and `TabItem` control templates utilizing `ToolWindowTabSelectedTabKey`, `ToolWindowTabSelectedTextKey`, and active bottom border indicators, replacing default Windows Aero tabs.

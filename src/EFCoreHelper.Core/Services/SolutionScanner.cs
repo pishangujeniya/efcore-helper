@@ -306,12 +306,12 @@ namespace EFCoreHelper.Core.Services
                         projectInfo.Migrations.Add(migration);
                     }
 
-                    // Sort migrations by timestamp ascending
+                    // Sort migrations descending: latest at the top, oldest at the bottom
                     projectInfo.Migrations.Sort((a, b) =>
                     {
                         if (a.CreatedDate.HasValue && b.CreatedDate.HasValue)
-                            return a.CreatedDate.Value.CompareTo(b.CreatedDate.Value);
-                        return string.Compare(a.MigrationId, b.MigrationId, StringComparison.OrdinalIgnoreCase);
+                            return b.CreatedDate.Value.CompareTo(a.CreatedDate.Value);
+                        return string.Compare(b.MigrationId, a.MigrationId, StringComparison.OrdinalIgnoreCase);
                     });
                 }
             }

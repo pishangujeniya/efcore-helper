@@ -16,6 +16,8 @@ namespace EFCoreHelper.Core.Services
         public bool IsDotnetEfInstalled { get; set; }
         public string? DotnetVersion { get; set; }
         public string? DotnetEfVersion { get; set; }
+        public bool IsUpdateAvailable { get; set; }
+        public string? LatestDotnetEfVersion { get; set; }
         public string? ErrorMessage { get; set; }
     }
 }

@@ -85,6 +85,7 @@
         <Button Content="Scaffold DbContext" Click="OnScaffoldDbContextClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Reverse engineer DbContext from database (dotnet ef dbcontext scaffold)" />
         <Button Content="Drop Database" Click="OnDropDatabaseClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Drop target database (dotnet ef database drop)" />
         <Button Content="Optimize" Click="OnOptimizeDbContextClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Generate compiled models for cold startup performance (dotnet ef dbcontext optimize)" />
+        <Button Content="Update dotnet-ef" Click="OnUpdateDotnetEfClicked" Style="{StaticResource ToolbarActionButtonStyle}" ToolTip="Install or update the dotnet-ef global tool (dotnet tool update --global dotnet-ef)" />
       </WrapPanel>
     </Border>
 
@@ -198,7 +199,10 @@
     <Border Grid.Row="4" Padding="8,3" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="0,1,0,0">
       <Grid>
         <TextBlock x:Name="TxtFooterStatus" Text="EF Core Helper initialized." Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" FontSize="11" Opacity="0.8" VerticalAlignment="Center" />
-        <TextBlock x:Name="TxtFooterToolVersion" HorizontalAlignment="Right" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" FontSize="10.5" Opacity="0.6" VerticalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <TextBlock x:Name="TxtFooterToolVersion" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" FontSize="10.5" Opacity="0.7" VerticalAlignment="Center" />
+          <Button x:Name="BtnFooterUpdateTool" Visibility="Collapsed" Content="Update" Click="OnUpdateDotnetEfClicked" Margin="6,0,0,0" Padding="6,1" Height="19" FontSize="10" Style="{StaticResource PrimaryButtonStyle}" ToolTip="Click to install or update the dotnet-ef global tool." />
+        </StackPanel>
       </Grid>
     </Border>
   </Grid>

@@ -51,7 +51,7 @@ Entity Framework Core is essential for modern .NET applications, yet managing mi
 | **Drop Database Safety Dialog** | ❌ | ✅ |
 | **Optimize DbContext (Compiled Models)** | ❌ | ✅ |
 | **Real-Time Streaming Console with Stop/Cancel** | ❌ | ✅ |
-| **Automatic `dotnet-ef` Global Tool Detection** | ❌ | ✅ (with 1-Click Install) |
+| **Automatic `dotnet-ef` Global Tool Detection** | ❌ | ✅ (with 1-Click Install & Update) |
 | **VS Dark / Light / Blue Theme Adaptive** | ⚠️ Partial | ✅ 100% Native Themed |
 
 ---
@@ -61,8 +61,8 @@ Entity Framework Core is essential for modern .NET applications, yet managing mi
 ### 1. 🗂️ Dedicated Entity Framework Core Tool Window
 - **Context Selectors**: Pick your Target Project, Startup Project, and `DbContext` from clean dropdowns that automatically scan your solution.
 - **Project Filter**: Exclusively focuses on modern .NET Core / .NET SDK projects (filtering out legacy .NET Framework noise).
-- **Migration History Explorer**: Browse all migrations in your project with timestamp, ID, and right-click actions (*"Update database to here"*, *"Script from here"*).
-- **Tooling Status Banner**: Automatically detects if `dotnet` and `dotnet-ef` are installed, with a 1-click **Install dotnet-ef** button if missing.
+- **Migration History Explorer**: Browse all migrations in your project sorted latest-first with timestamp, ID, and right-click actions (*"Update database to here"*, *"Script from here"*).
+- **Tooling Status Banner**: Automatically detects if `dotnet` and `dotnet-ef` are installed and checks NuGet for newer tool releases, with 1-click **Install dotnet-ef** or **Update dotnet-ef** buttons.
 
 ### 2. 🔍 Interactive Live Command Preview
 Every dialog includes a real-time command preview box that updates interactively as you type or toggle options:

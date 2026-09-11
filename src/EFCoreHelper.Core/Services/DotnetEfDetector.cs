@@ -9,6 +9,7 @@ namespace EFCoreHelper.Core.Services
     {
         private readonly IEfCliRunner _cliRunner;
         private static readonly Regex VersionRegex = new Regex(@"\b(\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)\b", RegexOptions.Compiled);
+        private static readonly Regex SearchRegex = new Regex(@"^\s*dotnet-ef\s+(\S+)", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public DotnetEfDetector(IEfCliRunner cliRunner)
         {
@@ -64,7 +65,60 @@ namespace EFCoreHelper.Core.Services
                 status.ErrorMessage = $"Error checking dotnet-ef CLI: {ex.Message}";
             }
 
+            // 3. Check for newer dotnet-ef version available globally
+            if (status.IsDotnetEfInstalled)
+            {
+                try
+                {
+                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    cts.CancelAfter(TimeSpan.FromSeconds(5));
+                    var searchResult = await _cliRunner.ExecuteDotnetAsync("tool search dotnet-ef", null, cts.Token).ConfigureAwait(false);
+                    if (searchResult.Success && !string.IsNullOrWhiteSpace(searchResult.Output))
+                    {
+                        var match = SearchRegex.Match(searchResult.Output);
+                        if (match.Success)
+                        {
+                            var latestVersion = match.Groups[1].Value.Trim();
+                            if (!string.IsNullOrEmpty(latestVersion))
+                            {
+                                status.LatestDotnetEfVersion = latestVersion;
+                                if (IsNewerVersion(status.DotnetEfVersion, latestVersion))
+                                {
+                                    status.IsUpdateAvailable = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Non-blocking: continue with installed version if offline or check times out
+                }
+            }
+
             return status;
+        }
+
+        public static bool IsNewerVersion(string? current, string? latest)
+        {
+            if (string.IsNullOrWhiteSpace(current) || string.IsNullOrWhiteSpace(latest))
+                return false;
+
+            var cleanCurrent = current!.Split('-')[0].Trim();
+            var cleanLatest = latest!.Split('-')[0].Trim();
+
+            if (Version.TryParse(cleanCurrent, out var vCurrent) && Version.TryParse(cleanLatest, out var vLatest))
+            {
+                if (vLatest > vCurrent)
+                    return true;
+                if (vLatest < vCurrent)
+                    return false;
+
+                // Same numeric version: if current has prerelease and latest does not, latest is newer
+                return current.Contains("-") && !latest.Contains("-");
+            }
+
+            return false;
         }
 
         public string GetInstallToolCommand() => "dotnet tool install --global dotnet-ef";

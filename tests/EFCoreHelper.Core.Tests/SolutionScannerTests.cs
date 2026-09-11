@@ -105,5 +105,41 @@ namespace EFCoreHelper.Core.Tests
             Assert.NotEmpty(projects);
             Assert.Contains(projects, p => p.Name == "ContosoUniversity");
         }
+
+        [Fact]
+        public async System.Threading.Tasks.Task ScanProjectAsync_SortsMigrationsDescending_LatestFirst()
+        {
+            var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "EFCoreHelper_Test_" + Guid.NewGuid().ToString("N"));
+            var migrationsDir = System.IO.Path.Combine(tempDir, "Migrations");
+            System.IO.Directory.CreateDirectory(migrationsDir);
+
+            try
+            {
+                var csprojContent = "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><TargetFramework>net8.0</TargetFramework><OutputType>Exe</OutputType></PropertyGroup></Project>";
+                var csprojPath = System.IO.Path.Combine(tempDir, "TestApp.csproj");
+                System.IO.File.WriteAllText(csprojPath, csprojContent);
+
+                // Create 3 migrations with different timestamps
+                System.IO.File.WriteAllText(System.IO.Path.Combine(migrationsDir, "20240101100000_OldMigration.cs"), "// migration 1");
+                System.IO.File.WriteAllText(System.IO.Path.Combine(migrationsDir, "20250601120000_MiddleMigration.cs"), "// migration 2");
+                System.IO.File.WriteAllText(System.IO.Path.Combine(migrationsDir, "20260911150000_LatestMigration.cs"), "// migration 3");
+
+                var scanner = new SolutionScanner();
+                var projectInfo = await scanner.ScanProjectAsync(csprojPath);
+
+                Assert.NotNull(projectInfo);
+                Assert.Equal(3, projectInfo!.Migrations.Count);
+                Assert.Equal("LatestMigration", projectInfo.Migrations[0].Name);
+                Assert.Equal("MiddleMigration", projectInfo.Migrations[1].Name);
+                Assert.Equal("OldMigration", projectInfo.Migrations[2].Name);
+            }
+            finally
+            {
+                if (System.IO.Directory.Exists(tempDir))
+                {
+                    System.IO.Directory.Delete(tempDir, true);
+                }
+            }
+        }
     }
 }
