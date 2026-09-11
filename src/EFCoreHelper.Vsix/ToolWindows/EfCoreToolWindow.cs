@@ -14,7 +14,7 @@ namespace EFCoreHelper.Vsix.ToolWindows
 
         public EfCoreToolWindow() : base(null)
         {
-            Caption = "Entity Framework Core";
+            Caption = "EF Core Helper";
             Content = new EfCoreToolWindowControl();
         }
     }

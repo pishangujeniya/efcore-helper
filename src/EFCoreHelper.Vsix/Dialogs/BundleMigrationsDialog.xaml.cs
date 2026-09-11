@@ -18,6 +18,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         public BundleMigrationsDialog(
             IReadOnlyList<ProjectInfo> projects,
             ProjectInfo? selectedProject = null,
+            ProjectInfo? selectedStartupProject = null,
             IEfCliCommandBuilder? commandBuilder = null)
         {
             InitializeComponent();
@@ -45,7 +46,9 @@ namespace EFCoreHelper.Vsix.Dialogs
                     }
                 }
 
-                var startup = _projects.FirstOrDefault(p => p.IsStartupProject) ?? _projects.FirstOrDefault();
+                var startup = selectedStartupProject
+                    ?? _projects.FirstOrDefault(p => p.IsStartupProject)
+                    ?? _projects.FirstOrDefault();
                 if (startup != null)
                 {
                     CmbStartupProject.SelectedItem = startup;

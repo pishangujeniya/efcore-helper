@@ -17,6 +17,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         public DropDatabaseDialog(
             IReadOnlyList<ProjectInfo> projects,
             ProjectInfo? selectedProject = null,
+            ProjectInfo? selectedStartupProject = null,
             DbContextInfo? selectedContext = null,
             IEfCliCommandBuilder? commandBuilder = null)
         {
@@ -45,7 +46,9 @@ namespace EFCoreHelper.Vsix.Dialogs
                     }
                 }
 
-                var startup = _projects.FirstOrDefault(p => p.IsStartupProject) ?? _projects.FirstOrDefault();
+                var startup = selectedStartupProject
+                    ?? _projects.FirstOrDefault(p => p.IsStartupProject)
+                    ?? _projects.FirstOrDefault();
                 if (startup != null)
                 {
                     CmbStartupProject.SelectedItem = startup;

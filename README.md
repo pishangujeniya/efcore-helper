@@ -176,9 +176,9 @@ Inspect the exact arguments before running, or click **Copy** to run it in your 
 ### Quick Start
 1. Open any solution containing a .NET Core EF Core project.
 2. Open the tool window:
-   - Go to **Tools > Entity Framework Core > Entity Framework Core Tool Window**
+   - Go to **Tools > EF Core Helper > EF Core Helper Tool Window**
    - Or press keyboard shortcut <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd>, <kbd>M</kbd>
-   - Or right-click any project in Solution Explorer > **EF Core > Open EF Core Tool Window**
+   - Or right-click any project in Solution Explorer > **EF Core Helper > Open EF Core Helper**
 3. Select your project and DbContext, and start managing your migrations effortlessly!
 
 ---

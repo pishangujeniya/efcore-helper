@@ -18,6 +18,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         public ScaffoldDbContextDialog(
             IReadOnlyList<ProjectInfo> projects,
             ProjectInfo? selectedProject = null,
+            ProjectInfo? selectedStartupProject = null,
             IEfCliCommandBuilder? commandBuilder = null)
         {
             InitializeComponent();
@@ -27,7 +28,7 @@ namespace EFCoreHelper.Vsix.Dialogs
             Loaded += (s, e) =>
             {
                 PopulateProviders();
-                PopulateProjects(selectedProject);
+                PopulateProjects(selectedProject, selectedStartupProject);
                 UpdatePreview();
             };
         }
@@ -42,10 +43,13 @@ namespace EFCoreHelper.Vsix.Dialogs
             }
         }
 
-        private void PopulateProjects(ProjectInfo? selectedProject)
+        private void PopulateProjects(ProjectInfo? selectedProject, ProjectInfo? selectedStartupProject)
         {
             CmbProject.ItemsSource = _projects;
             CmbProject.DisplayMemberPath = "Name";
+
+            CmbStartupProject.ItemsSource = _projects;
+            CmbStartupProject.DisplayMemberPath = "Name";
 
             if (selectedProject != null)
             {
@@ -54,6 +58,14 @@ namespace EFCoreHelper.Vsix.Dialogs
             else if (_projects.Count > 0)
             {
                 CmbProject.SelectedIndex = 0;
+            }
+
+            var startup = selectedStartupProject
+                ?? _projects.FirstOrDefault(p => p.IsStartupProject)
+                ?? _projects.FirstOrDefault();
+            if (startup != null)
+            {
+                CmbStartupProject.SelectedItem = startup;
             }
 
             UpdateConnectionStrings();
@@ -151,11 +163,13 @@ namespace EFCoreHelper.Vsix.Dialogs
                 schemas.AddRange(TxtSchemas.Text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()));
             }
 
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             return new ScaffoldDbContextOptions
             {
                 ConnectionString = CmbConnectionString.Text.Trim(),
                 Provider = providerName,
                 Project = project?.FilePath,
+                StartupProject = startup?.FilePath,
                 ContextName = string.IsNullOrWhiteSpace(TxtContextName.Text) ? null : TxtContextName.Text.Trim(),
                 OutputDir = string.IsNullOrWhiteSpace(TxtOutputDir.Text) ? null : TxtOutputDir.Text.Trim(),
                 ContextDir = string.IsNullOrWhiteSpace(TxtContextDir.Text) ? null : TxtContextDir.Text.Trim(),

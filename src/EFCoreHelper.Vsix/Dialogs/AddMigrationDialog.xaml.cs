@@ -19,6 +19,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         public AddMigrationDialog(
             IReadOnlyList<ProjectInfo> projects,
             ProjectInfo? selectedProject = null,
+            ProjectInfo? selectedStartupProject = null,
             DbContextInfo? selectedContext = null,
             IEfCliCommandBuilder? commandBuilder = null)
         {
@@ -28,13 +29,13 @@ namespace EFCoreHelper.Vsix.Dialogs
 
             Loaded += (s, e) =>
             {
-                PopulateDropdowns(selectedProject, selectedContext);
+                PopulateDropdowns(selectedProject, selectedStartupProject, selectedContext);
                 TxtMigrationName.Focus();
                 UpdatePreview();
             };
         }
 
-        private void PopulateDropdowns(ProjectInfo? selectedProject, DbContextInfo? selectedContext)
+        private void PopulateDropdowns(ProjectInfo? selectedProject, ProjectInfo? selectedStartupProject, DbContextInfo? selectedContext)
         {
             CmbProject.ItemsSource = _projects;
             CmbProject.DisplayMemberPath = "Name";
@@ -55,7 +56,9 @@ namespace EFCoreHelper.Vsix.Dialogs
                 }
             }
 
-            var startup = _projects.FirstOrDefault(p => p.IsStartupProject) ?? _projects.FirstOrDefault();
+            var startup = selectedStartupProject
+                ?? _projects.FirstOrDefault(p => p.IsStartupProject)
+                ?? _projects.FirstOrDefault();
             if (startup != null)
             {
                 CmbStartupProject.SelectedItem = startup;

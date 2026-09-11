@@ -59,7 +59,7 @@ namespace EFCoreHelper.Vsix.Commands
                 var window = _package.FindToolWindow(typeof(EfCoreToolWindow), 0, true);
                 if (window?.Frame == null)
                 {
-                    throw new NotSupportedException("Cannot create Entity Framework Core tool window.");
+                    throw new NotSupportedException("Cannot create EF Core Helper tool window.");
                 }
 
                 var windowFrame = (Microsoft.VisualStudio.Shell.Interop.IVsWindowFrame)window.Frame;

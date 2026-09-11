@@ -50,7 +50,7 @@ namespace EFCoreHelper.Vsix.Commands
                 var window = _package.FindToolWindow(typeof(EfCoreToolWindow), 0, true);
                 if (window?.Frame == null)
                 {
-                    throw new NotSupportedException("Cannot create Entity Framework Core tool window.");
+                    throw new NotSupportedException("Cannot create EF Core Helper tool window.");
                 }
 
                 if (window.Content is EfCoreToolWindowControl control)
@@ -66,7 +66,7 @@ namespace EFCoreHelper.Vsix.Commands
                 _outputService.WriteLineAsync($"[EF Core Helper Error] Failed to open tool window: {ex}");
                 VsShellUtilities.ShowMessageBox(
                     _package,
-                    $"Failed to open Entity Framework Core tool window:\n\n{ex.Message}\n\nSee Output window for details.",
+                    $"Failed to open EF Core Helper tool window:\n\n{ex.Message}\n\nSee Output window for details.",
                     "EF Core Helper",
                     OLEMSGICON.OLEMSGICON_CRITICAL,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,

@@ -20,6 +20,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         public ScriptMigrationDialog(
             IReadOnlyList<ProjectInfo> projects,
             ProjectInfo? selectedProject = null,
+            ProjectInfo? selectedStartupProject = null,
             DbContextInfo? selectedContext = null,
             IEfCliCommandBuilder? commandBuilder = null)
         {
@@ -31,6 +32,10 @@ namespace EFCoreHelper.Vsix.Dialogs
             {
                 CmbProject.ItemsSource = _projects;
                 CmbProject.DisplayMemberPath = "Name";
+
+                CmbStartupProject.ItemsSource = _projects;
+                CmbStartupProject.DisplayMemberPath = "Name";
+
                 if (selectedProject != null && (selectedProject.DbContexts.Count > 0 || _projects.All(p => p.DbContexts.Count == 0)))
                 {
                     CmbProject.SelectedItem = selectedProject;
@@ -43,6 +48,15 @@ namespace EFCoreHelper.Vsix.Dialogs
                         CmbProject.SelectedItem = preferred;
                     }
                 }
+
+                var startup = selectedStartupProject
+                    ?? _projects.FirstOrDefault(p => p.IsStartupProject)
+                    ?? _projects.FirstOrDefault();
+                if (startup != null)
+                {
+                    CmbStartupProject.SelectedItem = startup;
+                }
+
                 UpdateContexts(selectedContext);
                 UpdatePreview();
             };
@@ -152,6 +166,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         private ScriptMigrationOptions BuildOptions()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
             string? from = CmbFromMigration.Text.Trim();
@@ -169,6 +184,7 @@ namespace EFCoreHelper.Vsix.Dialogs
             return new ScriptMigrationOptions
             {
                 Project = project?.FilePath,
+                StartupProject = startup?.FilePath,
                 Context = context?.Name,
                 FromMigration = from,
                 ToMigration = to,

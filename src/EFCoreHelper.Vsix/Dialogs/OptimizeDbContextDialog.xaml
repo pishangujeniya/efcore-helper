@@ -38,6 +38,9 @@
           <TextBlock Text="Target project (Migrations assembly):" Style="{StaticResource VsFieldLabelStyle}" />
           <ComboBox x:Name="CmbProject" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" DisplayMemberPath="Name" Margin="0,0,0,10" SelectionChanged="OnFieldChanged" />
 
+          <TextBlock Text="Startup project (Executable / Web app):" Style="{StaticResource VsFieldLabelStyle}" />
+          <ComboBox x:Name="CmbStartupProject" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" DisplayMemberPath="Name" Margin="0,0,0,10" SelectionChanged="OnFieldChanged" />
+
           <TextBlock Text="DbContext class:" Style="{StaticResource VsFieldLabelStyle}" />
           <ComboBox x:Name="CmbContext" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" ItemTemplate="{StaticResource DbContextItemTemplate}" Margin="0,0,0,10" SelectionChanged="OnFieldChanged" />
 

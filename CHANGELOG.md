@@ -5,6 +5,22 @@ All notable changes to **EF Core Helper for Visual Studio** will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.7] - 2026-09-12
+
+### Fixed
+- **Startup Project Selection Across All Dialogs**:
+  - Added Startup Project dropdown selector to dialogs that previously lacked it (`RemoveMigrationDialog`, `ScriptMigrationDialog`, `ScaffoldDbContextDialog`, `OptimizeDbContextDialog`).
+  - Preselects the startup project chosen in the EF Core Tool Window toolbar across all 8 modal dialogs.
+  - Automatically queries and defaults to the solution's active startup project configured in Visual Studio via `VsSolutionService`.
+  - Ensures `--startup-project` is reliably populated in generated command previews and command executions across all actions.
+
+### Changed
+- **Visual Studio Menu Rebranding & Icon Integration**:
+  - Rebranded top-level Tools menu to **Tools > EF Core Helper > EF Core Helper Tool Window**.
+  - Rebranded Solution Explorer project context menu to **EF Core Helper > Open EF Core Helper**.
+  - Updated tool window dock caption to **EF Core Helper**.
+  - Integrated dedicated 16x16 icon (`Icon16.png`) for VSCT command tables so the extension icon displays cleanly in Visual Studio menus.
+
 ## [1.0.6] - 2026-09-11
 
 ### Added

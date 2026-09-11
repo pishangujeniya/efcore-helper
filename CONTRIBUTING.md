@@ -69,7 +69,7 @@ artifacts/EFCoreHelper.vsix
    - **Start external program**: points to your `devenv.exe` (e.g. `C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\devenv.exe`).
    - **Command line arguments**: `/rootsuffix Exp` (runs an isolated Experimental instance of Visual Studio without touching your main settings).
 4. Press **F5**. Visual Studio will launch an Experimental Instance with EF Core Helper loaded!
-5. In the experimental instance, open `samples/ContosoUniversity/ContosoUniversity.csproj` or any EF Core project, and open the tool window via **Tools > Entity Framework Core > Entity Framework Core Tool Window** or press `Ctrl+Alt+E, M`.
+5. In the experimental instance, open `samples/ContosoUniversity/ContosoUniversity.csproj` or any EF Core project, and open the tool window via **Tools > EF Core Helper > EF Core Helper Tool Window** or press `Ctrl+Alt+E, M`.
 
 ---
 

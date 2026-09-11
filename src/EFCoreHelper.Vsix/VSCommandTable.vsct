@@ -6,21 +6,21 @@
 
   <Commands package="guidEFCoreHelperPackage">
     <Menus>
-      <!-- Tools > Entity Framework Core SubMenu -->
+      <!-- Tools > EF Core Helper SubMenu -->
       <Menu guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenu" priority="0x0500" type="Menu">
         <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsMenuGroup" />
         <Strings>
-          <ButtonText>Entity Framework Core</ButtonText>
-          <MenuText>Entity Framework Core</MenuText>
+          <ButtonText>EF Core Helper</ButtonText>
+          <MenuText>EF Core Helper</MenuText>
         </Strings>
       </Menu>
 
-      <!-- Project Context Menu > EF Core SubMenu -->
+      <!-- Project Context Menu > EF Core Helper SubMenu -->
       <Menu guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenu" priority="0x0200" type="Menu">
         <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectMenuGroup" />
         <Strings>
-          <ButtonText>EF Core</ButtonText>
-          <MenuText>EF Core</MenuText>
+          <ButtonText>EF Core Helper</ButtonText>
+          <MenuText>EF Core Helper</MenuText>
         </Strings>
       </Menu>
     </Menus>
@@ -31,7 +31,7 @@
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
 
-      <!-- Group inside Tools > Entity Framework Core menu -->
+      <!-- Group inside Tools > EF Core Helper menu -->
       <Group guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" priority="0x0100">
         <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenu" />
       </Group>
@@ -53,7 +53,7 @@
         <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreToolsSubMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Entity Framework Core Tool Window</ButtonText>
+          <ButtonText>EF Core Helper Tool Window</ButtonText>
         </Strings>
       </Button>
 
@@ -145,14 +145,15 @@
 
       <Button guid="guidEFCoreHelperPackageCmdSet" id="cmdidProjectOpenToolWindow" priority="0x0104" type="Button">
         <Parent guid="guidEFCoreHelperPackageCmdSet" id="EFCoreProjectSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Open EF Core Tool Window</ButtonText>
+          <ButtonText>Open EF Core Helper</ButtonText>
         </Strings>
       </Button>
     </Buttons>
 
     <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
+      <Bitmap guid="guidImages" href="Resources\Icon16.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 

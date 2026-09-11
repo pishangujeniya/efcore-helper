@@ -17,6 +17,7 @@ namespace EFCoreHelper.Vsix.Dialogs
         public OptimizeDbContextDialog(
             IReadOnlyList<ProjectInfo> projects,
             ProjectInfo? selectedProject = null,
+            ProjectInfo? selectedStartupProject = null,
             DbContextInfo? selectedContext = null,
             IEfCliCommandBuilder? commandBuilder = null)
         {
@@ -28,6 +29,10 @@ namespace EFCoreHelper.Vsix.Dialogs
             {
                 CmbProject.ItemsSource = _projects;
                 CmbProject.DisplayMemberPath = "Name";
+
+                CmbStartupProject.ItemsSource = _projects;
+                CmbStartupProject.DisplayMemberPath = "Name";
+
                 if (selectedProject != null && (selectedProject.DbContexts.Count > 0 || _projects.All(p => p.DbContexts.Count == 0)))
                 {
                     CmbProject.SelectedItem = selectedProject;
@@ -40,6 +45,15 @@ namespace EFCoreHelper.Vsix.Dialogs
                         CmbProject.SelectedItem = preferred;
                     }
                 }
+
+                var startup = selectedStartupProject
+                    ?? _projects.FirstOrDefault(p => p.IsStartupProject)
+                    ?? _projects.FirstOrDefault();
+                if (startup != null)
+                {
+                    CmbStartupProject.SelectedItem = startup;
+                }
+
                 UpdateContexts(selectedContext);
                 UpdatePreview();
             };
@@ -107,11 +121,13 @@ namespace EFCoreHelper.Vsix.Dialogs
         private OptimizeDbContextOptions BuildOptions()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
             return new OptimizeDbContextOptions
             {
                 Project = project?.FilePath,
+                StartupProject = startup?.FilePath,
                 Context = context?.Name,
                 OutputDir = string.IsNullOrWhiteSpace(TxtOutputDir.Text) ? null : TxtOutputDir.Text.Trim(),
                 Namespace = string.IsNullOrWhiteSpace(TxtNamespace.Text) ? null : TxtNamespace.Text.Trim(),

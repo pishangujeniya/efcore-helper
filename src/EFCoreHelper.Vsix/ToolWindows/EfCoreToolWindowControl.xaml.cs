@@ -194,9 +194,11 @@ namespace EFCoreHelper.Vsix.ToolWindows
                 TxtFooterStatus.Text = "Scanning solution for .NET Core EF projects...";
 
                 string? slnPath = null;
+                string? vsStartupPath = null;
                 if (_solutionService != null)
                 {
                     slnPath = await _solutionService.GetActiveSolutionPathAsync();
+                    vsStartupPath = await _solutionService.GetStartupProjectFilePathAsync();
                 }
 
                 if (string.IsNullOrEmpty(slnPath))
@@ -209,7 +211,7 @@ namespace EFCoreHelper.Vsix.ToolWindows
 
                 _projects = await _scanner.ScanSolutionAsync(slnPath).ConfigureAwait(true);
 
-                PopulateProjectsDropdown();
+                PopulateProjectsDropdown(vsStartupPath);
                 TxtFooterStatus.Text = $"Discovered {_projects.Count} .NET Core project(s).";
             }
             catch (Exception ex)
@@ -218,13 +220,20 @@ namespace EFCoreHelper.Vsix.ToolWindows
             }
         }
 
-        private void PopulateProjectsDropdown()
+        private void PopulateProjectsDropdown(string? vsStartupPath = null)
         {
             CmbProject.ItemsSource = _projects;
             CmbStartupProject.ItemsSource = _projects;
 
-            // 1. Prefer Web/Exe project as startup project
-            var startup = _projects.FirstOrDefault(p => p.IsStartupProject) ?? _projects.FirstOrDefault();
+            // 1. Prefer active Visual Studio startup project, else Web/Exe project as startup project
+            ProjectInfo? startup = null;
+            if (!string.IsNullOrEmpty(vsStartupPath))
+            {
+                startup = _projects.FirstOrDefault(p => string.Equals(p.FilePath, vsStartupPath, StringComparison.OrdinalIgnoreCase) ||
+                                                       string.Equals(p.Name, Path.GetFileNameWithoutExtension(vsStartupPath), StringComparison.OrdinalIgnoreCase));
+            }
+
+            startup = startup ?? _projects.FirstOrDefault(p => p.IsStartupProject) ?? _projects.FirstOrDefault();
             if (startup != null)
             {
                 CmbStartupProject.SelectedItem = startup;
@@ -327,11 +336,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenAddMigrationDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new AddMigrationDialog(_projects, project, context, _commandBuilder);
+            var dlg = new AddMigrationDialog(_projects, project, startup, context, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildAddMigrationCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, async () =>
                 {
@@ -348,11 +359,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenUpdateDatabaseDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new UpdateDatabaseDialog(_projects, project, context, null, _commandBuilder);
+            var dlg = new UpdateDatabaseDialog(_projects, project, startup, context, null, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildUpdateDatabaseCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
             }
@@ -366,11 +379,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenRemoveMigrationDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new RemoveMigrationDialog(_projects, project, context, _commandBuilder);
+            var dlg = new RemoveMigrationDialog(_projects, project, startup, context, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildRemoveMigrationCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, async () =>
                 {
@@ -387,11 +402,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenScriptMigrationDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new ScriptMigrationDialog(_projects, project, context, _commandBuilder);
+            var dlg = new ScriptMigrationDialog(_projects, project, startup, context, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildScriptMigrationCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
             }
@@ -405,10 +422,12 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenBundleMigrationsDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
 
-            var dlg = new BundleMigrationsDialog(_projects, project, _commandBuilder);
+            var dlg = new BundleMigrationsDialog(_projects, project, startup, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildBundleMigrationCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
             }
@@ -422,10 +441,12 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenScaffoldDbContextDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
 
-            var dlg = new ScaffoldDbContextDialog(_projects, project, _commandBuilder);
+            var dlg = new ScaffoldDbContextDialog(_projects, project, startup, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildScaffoldDbContextCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, async () =>
                 {
@@ -442,11 +463,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenDropDatabaseDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new DropDatabaseDialog(_projects, project, context, _commandBuilder);
+            var dlg = new DropDatabaseDialog(_projects, project, startup, context, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildDropDatabaseCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
             }
@@ -460,11 +483,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
         public void OpenOptimizeDbContextDialog()
         {
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new OptimizeDbContextDialog(_projects, project, context, _commandBuilder);
+            var dlg = new OptimizeDbContextDialog(_projects, project, startup, context, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildOptimizeDbContextCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
             }
@@ -481,11 +506,13 @@ namespace EFCoreHelper.Vsix.ToolWindows
             if (selectedMigration == null) return;
 
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new UpdateDatabaseDialog(_projects, project, context, selectedMigration.Name, _commandBuilder);
+            var dlg = new UpdateDatabaseDialog(_projects, project, startup, context, selectedMigration.Name, _commandBuilder);
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildUpdateDatabaseCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
             }
@@ -497,14 +524,28 @@ namespace EFCoreHelper.Vsix.ToolWindows
             if (selectedMigration == null) return;
 
             var project = CmbProject.SelectedItem as ProjectInfo;
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo;
             var context = CmbContext.SelectedItem as DbContextInfo;
 
-            var dlg = new ScriptMigrationDialog(_projects, project, context, _commandBuilder);
+            var dlg = new ScriptMigrationDialog(_projects, project, startup, context, _commandBuilder);
             dlg.CmbFromMigration.Text = selectedMigration.Name;
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
+                EnsureStartupProject(dlg.Options, startup);
                 string cmd = _commandBuilder.BuildScriptMigrationCommand(dlg.Options);
                 ExecuteCommand(cmd, dlg.Options.Project, null);
+            }
+        }
+
+        private void EnsureStartupProject(BaseCommandOptions options, ProjectInfo? fallbackStartup)
+        {
+            if (string.IsNullOrWhiteSpace(options.StartupProject))
+            {
+                var startup = fallbackStartup ?? (CmbStartupProject.SelectedItem as ProjectInfo);
+                if (startup != null)
+                {
+                    options.StartupProject = startup.FilePath;
+                }
             }
         }
 

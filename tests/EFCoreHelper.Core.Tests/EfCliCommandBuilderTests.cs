@@ -200,5 +200,36 @@ namespace EFCoreHelper.Core.Tests
             Assert.Equal("C:\\My Dir\\Project.csproj", args[4]);
             Assert.Equal("--verbose", args[5]);
         }
+
+        [Fact]
+        public void BuildCommands_WithStartupProject_AlwaysIncludesStartupProjectArgument()
+        {
+            var startup = "C:\\Apps\\MyWeb.csproj";
+            var proj = "C:\\Apps\\MyData.csproj";
+
+            var addCmd = _builder.BuildAddMigrationCommand(new AddMigrationOptions { MigrationName = "M1", Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", addCmd);
+
+            var removeCmd = _builder.BuildRemoveMigrationCommand(new RemoveMigrationOptions { Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", removeCmd);
+
+            var updateCmd = _builder.BuildUpdateDatabaseCommand(new UpdateDatabaseOptions { Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", updateCmd);
+
+            var scriptCmd = _builder.BuildScriptMigrationCommand(new ScriptMigrationOptions { Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", scriptCmd);
+
+            var bundleCmd = _builder.BuildBundleMigrationCommand(new BundleMigrationOptions { Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", bundleCmd);
+
+            var scaffoldCmd = _builder.BuildScaffoldDbContextCommand(new ScaffoldDbContextOptions { ConnectionString = "conn", Provider = "provider", Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", scaffoldCmd);
+
+            var dropCmd = _builder.BuildDropDatabaseCommand(new DropDatabaseOptions { Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", dropCmd);
+
+            var optimizeCmd = _builder.BuildOptimizeDbContextCommand(new OptimizeDbContextOptions { Project = proj, StartupProject = startup });
+            Assert.Contains($"--startup-project {startup}", optimizeCmd);
+        }
     }
 }
