@@ -5,6 +5,20 @@ All notable changes to **EF Core Helper for Visual Studio** will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2026-09-11
+
+### Added
+- **Native Vector Migration Glyphs**: Added crisp database migration vector icons to migration list items that cleanly adapt color and opacity to selection and theme states.
+- **Empty-State Placeholder**: Added an informative, theme-aware empty state overlay in the tool window when no migrations exist in the selected project.
+- **Themed Tool Window Tabs**: Created native Visual Studio `TabControl` and `TabItem` control templates utilizing `ToolWindowTabSelectedTabKey`, `ToolWindowTabSelectedTextKey`, and active bottom border indicators, replacing default Windows Aero tabs.
+- **Themed Context Menus**: Created native `ContextMenu` and `MenuItem` styles using `CommandBarMenuBackgroundGradientKey` and `CommandBarHoverOverSelectedKey`, ensuring right-click menus match Dark and Light themes.
+
+### Fixed
+- **Dark Mode Migration List Contrast**: Replaced default WPF Aero `ListBoxItem` container template with a dedicated VS shell template. Resolved issue where inactive selected items displayed blinding `#D9D9D9` light-gray backgrounds and illegible text in Visual Studio Dark Mode.
+- **Dynamic Selection & Hover Brushes**: All list items now dynamically bind to `HighlightKey` / `HighlightTextKey` when active and `CommandBarHoverOverSelectedKey` / `CommandBarBorderKey` when hovered or inactive.
+- **Themed ScrollViewers Across All Dialogs**: Applied Visual Studio's `VsResourceKeys.ScrollViewerStyleKey` to all modal dialog scroll viewers and text areas, ensuring scrollbars render in dark mode when the Dark theme is active.
+- **Execution Console Selection Theming**: Configured explicit dynamic `CaretBrush` and `SelectionBrush` for the streaming execution console TextBox.
+
 ## [1.0.5] - 2026-09-08
 
 ### Fixed

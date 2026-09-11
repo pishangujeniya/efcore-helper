@@ -33,7 +33,7 @@
       </Grid.RowDefinitions>
 
       <!-- Form Fields -->
-      <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+      <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Style="{DynamicResource {x:Static shell:VsResourceKeys.ScrollViewerStyleKey}}">
         <StackPanel>
           <TextBlock Text="Target project (Migrations assembly):" Style="{StaticResource VsFieldLabelStyle}" />
           <ComboBox x:Name="CmbProject" Height="23" Style="{DynamicResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" DisplayMemberPath="Name" Margin="0,0,0,10" SelectionChanged="OnFieldChanged" />

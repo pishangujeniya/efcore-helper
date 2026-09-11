@@ -33,7 +33,7 @@
       </Grid.RowDefinitions>
 
       <!-- Form Fields -->
-      <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+      <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Style="{DynamicResource {x:Static shell:VsResourceKeys.ScrollViewerStyleKey}}">
         <StackPanel>
           <!-- Migration Name -->
           <TextBlock Text="Migration name:" Style="{StaticResource VsFieldLabelStyle}" />

@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0">
 
@@ -37,11 +37,14 @@
     <Setter Property="FontSize" Value="11.5" />
     <Setter Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}" />
     <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.WindowTextKey}}" />
+    <Setter Property="CaretBrush" Value="{DynamicResource {x:Static shell:VsBrushes.WindowTextKey}}" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static shell:VsBrushes.HighlightKey}}" />
     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Padding" Value="6,4" />
     <Setter Property="IsReadOnly" Value="True" />
     <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
   </Style>
 
   <!-- Visual Studio Command Bar / Toolbar Button Style -->
@@ -70,10 +73,12 @@
             <Trigger Property="IsMouseOver" Value="True">
               <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarHoverOverSelectedKey}}" />
               <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextHoverKey}}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
               <Setter TargetName="border" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarSelectedKey}}" />
               <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextSelectedKey}}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
               <Setter Property="Opacity" Value="0.4" />
@@ -136,6 +141,210 @@
     <Setter Property="MinWidth" Value="75" />
     <Setter Property="Height" Value="23" />
     <Setter Property="Padding" Value="10,2" />
+  </Style>
+
+  <!-- Native Visual Studio Tool Window TabItem Style -->
+  <Style x:Key="VsToolWindowTabItemStyle" TargetType="TabItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTabTextKey}}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0,0,0,2" />
+    <Setter Property="Padding" Value="12,5,12,6" />
+    <Setter Property="Margin" Value="0,0,2,-1" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FontSize" Value="11.5" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TabItem">
+          <Border x:Name="TabBorder"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  Padding="{TemplateBinding Padding}"
+                  SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="TabContent"
+                              ContentSource="Header"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTabMouseOverBackgroundBeginKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTabMouseOverTextKey}}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTabSelectedTabKey}}" />
+              <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.HighlightKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTabSelectedTextKey}}" />
+              <Setter Property="FontWeight" Value="SemiBold" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.GrayTextKey}}" />
+              <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Native Visual Studio Tool Window TabControl Style -->
+  <Style x:Key="VsToolWindowTabControlStyle" TargetType="TabControl">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="ItemContainerStyle" Value="{StaticResource VsToolWindowTabItemStyle}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TabControl">
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!-- Tab Header Bar with subtle bottom border -->
+            <Border Grid.Row="0"
+                    BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}"
+                    BorderThickness="0,0,0,1"
+                    Padding="2,2,2,0">
+              <TabPanel IsItemsHost="True" />
+            </Border>
+            <!-- Tab Content -->
+            <Border Grid.Row="1"
+                    Background="{TemplateBinding Background}"
+                    BorderThickness="0">
+              <ContentPresenter ContentSource="SelectedContent" />
+            </Border>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Native Visual Studio Themed ListBoxItem Container Style -->
+  <Style x:Key="VsThemedListBoxItemStyle" TargetType="ListBoxItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="6,4" />
+    <Setter Property="Margin" Value="1,1,1,1" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border x:Name="ItemBorder"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  Padding="{TemplateBinding Padding}"
+                  CornerRadius="2"
+                  SnapsToDevicePixels="True">
+            <ContentPresenter HorizontalAlignment="Stretch" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <!-- Mouse Over (Hover) -->
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarHoverOverSelectedKey}}" />
+              <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" />
+            </Trigger>
+
+            <!-- Selected & Active (Focused) -->
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsSelected" Value="True" />
+                <Condition Property="Selector.IsSelectionActive" Value="True" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.HighlightKey}}" />
+              <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.HighlightKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.HighlightTextKey}}" />
+            </MultiTrigger>
+
+            <!-- Selected & Inactive (Focus is elsewhere in VS) -->
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsSelected" Value="True" />
+                <Condition Property="Selector.IsSelectionActive" Value="False" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarHoverOverSelectedKey}}" />
+              <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" />
+            </MultiTrigger>
+
+            <!-- Disabled -->
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.GrayTextKey}}" />
+              <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Native Visual Studio Themed ListBox Style -->
+  <Style x:Key="VsThemedListBoxStyle" TargetType="ListBox">
+    <Setter Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+    <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="ItemContainerStyle" Value="{StaticResource VsThemedListBoxItemStyle}" />
+  </Style>
+
+  <!-- Native Visual Studio ContextMenu & MenuItem Styles -->
+  <Style x:Key="VsThemedMenuItemStyle" TargetType="MenuItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextActiveKey}}" />
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="FontSize" Value="11.5" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="MenuItem">
+          <Border x:Name="MenuBorder"
+                  Background="{TemplateBinding Background}"
+                  BorderThickness="1"
+                  BorderBrush="Transparent"
+                  Padding="{TemplateBinding Padding}"
+                  CornerRadius="1"
+                  SnapsToDevicePixels="True">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+              </Grid.ColumnDefinitions>
+              <ContentPresenter Grid.Column="0" ContentSource="Icon" Margin="0,0,6,0" VerticalAlignment="Center" />
+              <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+              <Setter TargetName="MenuBorder" Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarHoverOverSelectedKey}}" />
+              <Setter TargetName="MenuBorder" Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" />
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextHoverKey}}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextInactiveKey}}" />
+              <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="VsThemedContextMenuStyle" TargetType="ContextMenu">
+    <Setter Property="Background" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBorderKey}}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static shell:VsBrushes.CommandBarTextActiveKey}}" />
+    <Setter Property="Padding" Value="2" />
+    <Setter Property="ItemContainerStyle" Value="{StaticResource VsThemedMenuItemStyle}" />
   </Style>
 
 </ResourceDictionary>

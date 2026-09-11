@@ -69,7 +69,7 @@
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="TxtBannerMessage" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" />
+        <TextBlock x:Name="TxtBannerMessage" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" TextWrapping="Wrap" />
         <Button x:Name="BtnBannerAction" Grid.Column="1" Margin="8,0,0,0" Padding="10,2" Height="23" Click="OnBannerActionClicked" Style="{StaticResource PrimaryButtonStyle}" />
       </Grid>
     </Border>
@@ -89,9 +89,9 @@
     </Border>
 
     <!-- 4. Main Tabbed Content -->
-    <TabControl x:Name="MainTabs" Grid.Row="3" Background="Transparent" BorderThickness="0" Margin="4,4,4,0">
+    <TabControl x:Name="MainTabs" Grid.Row="3" Style="{StaticResource VsToolWindowTabControlStyle}" Margin="4,4,4,0">
       <!-- Tab 1: Migrations List -->
-      <TabItem Header="Migrations" FontSize="11.5">
+      <TabItem Header="Migrations">
         <Grid Margin="0,4,0,0">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -99,39 +99,61 @@
           </Grid.RowDefinitions>
 
           <Grid Grid.Row="0" Margin="4,2,4,6">
-            <TextBlock Text="Migration History" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center" />
-            <TextBlock x:Name="TxtMigrationCount" HorizontalAlignment="Right" FontSize="11" Opacity="0.7" VerticalAlignment="Center" />
+            <TextBlock Text="Migration History" FontWeight="SemiBold" FontSize="11" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" VerticalAlignment="Center" />
+            <TextBlock x:Name="TxtMigrationCount" HorizontalAlignment="Right" FontSize="11" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" Opacity="0.7" VerticalAlignment="Center" />
           </Grid>
 
           <!-- Migrations List -->
-          <ListBox x:Name="LstMigrations" Grid.Row="1" Background="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="1">
+          <ListBox x:Name="LstMigrations" Grid.Row="1" Style="{StaticResource VsThemedListBoxStyle}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Margin="4,3">
+                <Grid Margin="2,2">
                   <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
-                  <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="11.5" />
-                    <TextBlock Text="{Binding MigrationId}" FontSize="10" Opacity="0.6" Margin="0,1,0,0" />
+
+                  <!-- Migration Vector Icon -->
+                  <Viewbox Grid.Column="0" Width="14" Height="14" Margin="2,0,8,0" VerticalAlignment="Center">
+                    <Canvas Width="16" Height="16">
+                      <Path Data="M2,3 C2,1.9 4.7,1 8,1 C11.3,1 14,1.9 14,3 C14,4.1 11.3,5 8,5 C4.7,5 2,4.1 2,3 Z M2,5.5 C2,6.6 4.7,7.5 8,7.5 C11.3,7.5 14,6.6 14,5.5 L14,8 C14,9.1 11.3,10 8,10 C4.7,10 2,9.1 2,8 Z M2,10.5 C2,11.6 4.7,12.5 8,12.5 C11.3,12.5 14,11.6 14,10.5 L14,13 C14,14.1 11.3,15 8,15 C4.7,15 2,14.1 2,13 Z"
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
+                            Opacity="0.75" />
+                    </Canvas>
+                  </Viewbox>
+
+                  <!-- Name & ID -->
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="11.5" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding MigrationId}" FontSize="10" Opacity="0.65" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" />
                   </StackPanel>
-                  <TextBlock Grid.Column="1" Text="{Binding CreatedDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" FontSize="10.5" Opacity="0.6" VerticalAlignment="Center" Margin="8,0,0,0" />
+
+                  <!-- Timestamp -->
+                  <TextBlock Grid.Column="2" Text="{Binding CreatedDate, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" FontSize="10.5" Opacity="0.65" VerticalAlignment="Center" Margin="8,0,4,0" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
-              <ContextMenu>
-                <MenuItem Header="Update Database to This Migration" Click="OnContextUpdateToMigrationClicked" />
-                <MenuItem Header="Generate Script From Here" Click="OnContextScriptFromMigrationClicked" />
+              <ContextMenu Style="{StaticResource VsThemedContextMenuStyle}">
+                <MenuItem Header="Update Database to This Migration" Style="{StaticResource VsThemedMenuItemStyle}" Click="OnContextUpdateToMigrationClicked" />
+                <MenuItem Header="Generate Script From Here" Style="{StaticResource VsThemedMenuItemStyle}" Click="OnContextScriptFromMigrationClicked" />
               </ContextMenu>
             </ListBox.ContextMenu>
           </ListBox>
+
+          <!-- Empty State Overlay -->
+          <Border x:Name="PnlNoMigrations" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="24" IsHitTestVisible="False">
+            <StackPanel HorizontalAlignment="Center">
+              <TextBlock Text="No migrations found" FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" Margin="0,0,0,4" />
+              <TextBlock Text="Click 'Add Migration' on the toolbar above to create one." FontSize="11" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static shell:VsBrushes.GrayTextKey}}" />
+            </StackPanel>
+          </Border>
         </Grid>
       </TabItem>
 
       <!-- Tab 2: Execution Console -->
-      <TabItem Header="Execution Console" FontSize="11.5">
+      <TabItem Header="Execution Console">
         <Grid Margin="0,4,0,0">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -143,7 +165,7 @@
             <Grid>
               <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="Gray" Margin="0,0,6,0" />
-                <TextBlock x:Name="TxtConsoleStatus" Text="Ready" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock x:Name="TxtConsoleStatus" Text="Ready" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" VerticalAlignment="Center" />
               </StackPanel>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="BtnCancelCommand" Content="Cancel" Click="OnCancelExecutionClicked" IsEnabled="False" Style="{StaticResource ToolbarActionButtonStyle}" Margin="0,0,4,0" ToolTip="Cancel the active command" />
@@ -157,6 +179,8 @@
           <TextBox x:Name="TxtConsoleOutput" Grid.Row="1"
                    Background="{DynamicResource {x:Static shell:VsBrushes.ToolWindowBackgroundKey}}"
                    Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}"
+                   CaretBrush="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}"
+                   SelectionBrush="{DynamicResource {x:Static shell:VsBrushes.HighlightKey}}"
                    FontFamily="Consolas, Cascadia Code, Courier New"
                    FontSize="11.5"
                    IsReadOnly="True"
@@ -173,8 +197,8 @@
     <!-- 5. Status Bar -->
     <Border Grid.Row="4" Padding="8,3" Background="{DynamicResource {x:Static shell:VsBrushes.CommandBarMenuBackgroundGradientKey}}" BorderBrush="{DynamicResource {x:Static shell:VsBrushes.CommandBarBorderKey}}" BorderThickness="0,1,0,0">
       <Grid>
-        <TextBlock x:Name="TxtFooterStatus" Text="EF Core Helper initialized." FontSize="11" Opacity="0.8" VerticalAlignment="Center" />
-        <TextBlock x:Name="TxtFooterToolVersion" HorizontalAlignment="Right" FontSize="10.5" Opacity="0.6" VerticalAlignment="Center" />
+        <TextBlock x:Name="TxtFooterStatus" Text="EF Core Helper initialized." Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" FontSize="11" Opacity="0.8" VerticalAlignment="Center" />
+        <TextBlock x:Name="TxtFooterToolVersion" HorizontalAlignment="Right" Foreground="{DynamicResource {x:Static shell:VsBrushes.ToolWindowTextKey}}" FontSize="10.5" Opacity="0.6" VerticalAlignment="Center" />
       </Grid>
     </Border>
   </Grid>

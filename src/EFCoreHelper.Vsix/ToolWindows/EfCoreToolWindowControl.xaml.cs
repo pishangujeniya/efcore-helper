@@ -214,6 +214,7 @@ namespace EFCoreHelper.Vsix.ToolWindows
                 CmbContext.ItemsSource = null;
                 LstMigrations.ItemsSource = null;
                 TxtMigrationCount.Text = "0 migrations";
+                PnlNoMigrations.Visibility = Visibility.Visible;
                 return;
             }
 
@@ -247,6 +248,7 @@ namespace EFCoreHelper.Vsix.ToolWindows
 
             LstMigrations.ItemsSource = project.Migrations;
             TxtMigrationCount.Text = $"{project.Migrations.Count} migration(s)";
+            PnlNoMigrations.Visibility = project.Migrations.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void OnProjectChanged(object sender, SelectionChangedEventArgs e)
