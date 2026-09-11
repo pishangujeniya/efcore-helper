@@ -409,8 +409,27 @@ namespace EFCoreHelper.Vsix.ToolWindows
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
                 EnsureStartupProject(dlg.Options, startup);
+                if (string.IsNullOrWhiteSpace(dlg.Options.OutputFilePath))
+                {
+                    dlg.Options.OutputFilePath = ScriptMigrationOptions.GetDefaultScriptPath(dlg.Options.StartupProject ?? dlg.Options.Project);
+                }
+
                 string cmd = _commandBuilder.BuildScriptMigrationCommand(dlg.Options);
-                ExecuteCommand(cmd, dlg.Options.Project, null);
+                var scriptPath = dlg.Options.OutputFilePath;
+                ExecuteCommand(cmd, dlg.Options.Project, () =>
+                {
+                    if (!string.IsNullOrEmpty(scriptPath))
+                    {
+                        TxtFooterStatus.Text = $"Script generated at {Path.GetFileName(scriptPath)}";
+                        ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+                        {
+                            if (_solutionService != null)
+                            {
+                                await _solutionService.OpenFileAsync(scriptPath);
+                            }
+                        });
+                    }
+                });
             }
         }
 
@@ -532,8 +551,27 @@ namespace EFCoreHelper.Vsix.ToolWindows
             if (dlg.ShowDialog() == true && dlg.Options != null)
             {
                 EnsureStartupProject(dlg.Options, startup);
+                if (string.IsNullOrWhiteSpace(dlg.Options.OutputFilePath))
+                {
+                    dlg.Options.OutputFilePath = ScriptMigrationOptions.GetDefaultScriptPath(dlg.Options.StartupProject ?? dlg.Options.Project);
+                }
+
                 string cmd = _commandBuilder.BuildScriptMigrationCommand(dlg.Options);
-                ExecuteCommand(cmd, dlg.Options.Project, null);
+                var scriptPath = dlg.Options.OutputFilePath;
+                ExecuteCommand(cmd, dlg.Options.Project, () =>
+                {
+                    if (!string.IsNullOrEmpty(scriptPath))
+                    {
+                        TxtFooterStatus.Text = $"Script generated at {Path.GetFileName(scriptPath)}";
+                        ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+                        {
+                            if (_solutionService != null)
+                            {
+                                await _solutionService.OpenFileAsync(scriptPath);
+                            }
+                        });
+                    }
+                });
             }
         }
 

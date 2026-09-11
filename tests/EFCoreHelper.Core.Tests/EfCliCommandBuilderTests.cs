@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using EFCoreHelper.Core.Models;
 using EFCoreHelper.Core.Services;
 using Xunit;
@@ -230,6 +231,43 @@ namespace EFCoreHelper.Core.Tests
 
             var optimizeCmd = _builder.BuildOptimizeDbContextCommand(new OptimizeDbContextOptions { Project = proj, StartupProject = startup });
             Assert.Contains($"--startup-project {startup}", optimizeCmd);
+        }
+
+        [Fact]
+        public void ScriptMigrationOptions_GetDefaultScriptPath_ReturnsScriptSqlInStartupDirectory()
+        {
+            var startupProjectPath = Path.Combine("C:", "Users", "dev", "src", "MyWeb", "MyWeb.csproj");
+            var expectedScriptPath = Path.Combine("C:", "Users", "dev", "src", "MyWeb", "script.sql");
+
+            var resolved = ScriptMigrationOptions.GetDefaultScriptPath(startupProjectPath);
+            Assert.Equal(expectedScriptPath, resolved);
+
+            Assert.Equal("script.sql", ScriptMigrationOptions.GetDefaultScriptPath(null));
+            Assert.Equal("script.sql", ScriptMigrationOptions.GetDefaultScriptPath(""));
+            Assert.Equal("script.sql", ScriptMigrationOptions.GetDefaultScriptPath("   "));
+        }
+
+        [Fact]
+        public void BuildScriptMigrationCommand_WithDefaultStartupProjectOutputPath_GeneratesCorrectCommand()
+        {
+            var startupProj = Path.Combine("C:", "My Solution", "src", "MyWeb", "MyWeb.csproj");
+            var targetProj = Path.Combine("C:", "My Solution", "src", "MyData", "MyData.csproj");
+            var defaultOutput = ScriptMigrationOptions.GetDefaultScriptPath(startupProj);
+
+            var options = new ScriptMigrationOptions
+            {
+                Project = targetProj,
+                StartupProject = startupProj,
+                OutputFilePath = defaultOutput,
+                Idempotent = true
+            };
+
+            var cmd = _builder.BuildScriptMigrationCommand(options);
+
+            Assert.Contains($"--project \"{targetProj}\"", cmd);
+            Assert.Contains($"--startup-project \"{startupProj}\"", cmd);
+            Assert.Contains($"--output \"{defaultOutput}\"", cmd);
+            Assert.Contains("--idempotent", cmd);
         }
     }
 }

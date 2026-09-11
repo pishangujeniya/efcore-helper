@@ -14,6 +14,7 @@ namespace EFCoreHelper.Vsix.Services
         Task<string?> GetActiveSolutionPathAsync();
         Task<string?> GetStartupProjectFilePathAsync();
         Task<string?> GetSelectedProjectFilePathAsync();
+        Task OpenFileAsync(string filePath);
     }
 
     public class VsSolutionService : IVsSolutionService
@@ -119,6 +120,27 @@ namespace EFCoreHelper.Vsix.Services
             }
 
             return null;
+        }
+
+        public async Task OpenFileAsync(string filePath)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (_dte == null)
+            {
+                _dte = await _package.GetServiceAsync(typeof(DTE)) as DTE2;
+            }
+
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    _dte?.ItemOperations?.OpenFile(filePath);
+                }
+            }
+            catch
+            {
+                // Ignore if unable to open in editor
+            }
         }
     }
 }

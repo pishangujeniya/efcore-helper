@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.7] - 2026-09-12
 
+### Added
+- **Generate SQL Script Default Export to Startup Project Root**:
+  - `ScriptMigrationDialog` automatically defaults the output script path to `script.sql` in the root of the selected startup project (`<StartupProjectRoot>\script.sql`).
+  - Real-time command preview instantly reflects the `--output` argument with the default or custom script path.
+  - Dynamically updates the target directory when changing startup projects while preserving custom filenames.
+  - The "Browse..." save dialog pre-initializes to the startup project root folder with filename `script.sql`.
+  - Automatically opens the generated `script.sql` document directly in the Visual Studio code editor on completion.
+
 ### Fixed
 - **Startup Project Selection Across All Dialogs**:
   - Added Startup Project dropdown selector to dialogs that previously lacked it (`RemoveMigrationDialog`, `ScriptMigrationDialog`, `ScaffoldDbContextDialog`, `OptimizeDbContextDialog`).

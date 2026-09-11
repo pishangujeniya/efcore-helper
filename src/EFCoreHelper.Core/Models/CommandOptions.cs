@@ -32,11 +32,26 @@ namespace EFCoreHelper.Core.Models
 
     public class ScriptMigrationOptions : BaseCommandOptions
     {
+        public const string DefaultScriptFileName = "script.sql";
+
         public string? FromMigration { get; set; }
         public string? ToMigration { get; set; }
         public string? OutputFilePath { get; set; }
         public bool Idempotent { get; set; }
         public bool NoTransactions { get; set; }
+
+        public static string GetDefaultScriptPath(string? projectOrStartupPath)
+        {
+            if (!string.IsNullOrWhiteSpace(projectOrStartupPath))
+            {
+                var dir = System.IO.Path.GetDirectoryName(projectOrStartupPath);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    return System.IO.Path.Combine(dir, DefaultScriptFileName);
+                }
+            }
+            return DefaultScriptFileName;
+        }
     }
 
     public class BundleMigrationOptions : BaseCommandOptions

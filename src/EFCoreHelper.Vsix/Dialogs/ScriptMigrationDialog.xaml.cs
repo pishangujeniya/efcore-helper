@@ -57,6 +57,7 @@ namespace EFCoreHelper.Vsix.Dialogs
                     CmbStartupProject.SelectedItem = startup;
                 }
 
+                UpdateDefaultOutputPath(force: true);
                 UpdateContexts(selectedContext);
                 UpdatePreview();
             };
@@ -111,12 +112,31 @@ namespace EFCoreHelper.Vsix.Dialogs
             CmbToMigration.SelectedIndex = 0;
         }
 
+        private void UpdateDefaultOutputPath(bool force = false)
+        {
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo ?? CmbProject.SelectedItem as ProjectInfo;
+            var defaultPath = ScriptMigrationOptions.GetDefaultScriptPath(startup?.FilePath);
+
+            if (force || string.IsNullOrWhiteSpace(TxtOutputPath.Text) || TxtOutputPath.Text.EndsWith(ScriptMigrationOptions.DefaultScriptFileName, StringComparison.OrdinalIgnoreCase))
+            {
+                TxtOutputPath.Text = defaultPath;
+            }
+        }
+
         private void OnFieldChanged(object sender, RoutedEventArgs e)
         {
             if (sender == CmbProject)
             {
                 var keepCtx = CmbContext.SelectedItem as DbContextInfo;
                 UpdateContexts(keepCtx);
+                if (CmbStartupProject.SelectedItem == null)
+                {
+                    UpdateDefaultOutputPath();
+                }
+            }
+            else if (sender == CmbStartupProject)
+            {
+                UpdateDefaultOutputPath();
             }
             else if (sender == CmbContext && CmbContext.SelectedItem is DbContextInfo ctx)
             {
@@ -136,11 +156,16 @@ namespace EFCoreHelper.Vsix.Dialogs
 
         private void OnBrowseClicked(object sender, RoutedEventArgs e)
         {
+            var startup = CmbStartupProject.SelectedItem as ProjectInfo ?? CmbProject.SelectedItem as ProjectInfo;
+            var defaultPath = ScriptMigrationOptions.GetDefaultScriptPath(startup?.FilePath);
+            var initialDir = Path.GetDirectoryName(defaultPath);
+
             var dlg = new SaveFileDialog
             {
                 Filter = "SQL Script (*.sql)|*.sql|All Files (*.*)|*.*",
                 DefaultExt = ".sql",
-                FileName = "migration_script.sql"
+                FileName = ScriptMigrationOptions.DefaultScriptFileName,
+                InitialDirectory = !string.IsNullOrEmpty(initialDir) && Directory.Exists(initialDir) ? initialDir : null
             };
 
             if (dlg.ShowDialog() == true)
@@ -181,6 +206,12 @@ namespace EFCoreHelper.Vsix.Dialogs
                 to = null;
             }
 
+            string? outputPath = string.IsNullOrWhiteSpace(TxtOutputPath.Text) ? null : TxtOutputPath.Text.Trim();
+            if (string.IsNullOrWhiteSpace(outputPath))
+            {
+                outputPath = ScriptMigrationOptions.GetDefaultScriptPath(startup?.FilePath ?? project?.FilePath);
+            }
+
             return new ScriptMigrationOptions
             {
                 Project = project?.FilePath,
@@ -188,7 +219,7 @@ namespace EFCoreHelper.Vsix.Dialogs
                 Context = context?.Name,
                 FromMigration = from,
                 ToMigration = to,
-                OutputFilePath = string.IsNullOrWhiteSpace(TxtOutputPath.Text) ? null : TxtOutputPath.Text.Trim(),
+                OutputFilePath = outputPath,
                 Idempotent = ChkIdempotent.IsChecked == true,
                 NoTransactions = ChkNoTransactions.IsChecked == true
             };
