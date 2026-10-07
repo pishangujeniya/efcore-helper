@@ -27,11 +27,11 @@ Before creating a new release:
 1. **Bump Version Number**:
    - In [`Directory.Build.props`](Directory.Build.props):
      ```xml
-     <VersionPrefix>1.0.7</VersionPrefix>
+     <VersionPrefix>1.0.8</VersionPrefix>
      ```
    - In [`src/EFCoreHelper.Vsix/source.extension.vsixmanifest`](src/EFCoreHelper.Vsix/source.extension.vsixmanifest):
      ```xml
-     <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.7" Language="en-US" Publisher="Pishang Ujeniya" />
+     <Identity Id="EFCoreHelper.f3f6c8d7-7d9a-4e2b-9e4a-9b1b7a2d4e8f" Version="1.0.8" Language="en-US" Publisher="Pishang Ujeniya" />
      ```
 
 2. **Update CHANGELOG.md**:

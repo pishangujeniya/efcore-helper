@@ -392,7 +392,14 @@ namespace EFCoreHelper.Core.Services
 
             if (argument.IndexOf(' ') >= 0 || argument.IndexOf('\t') >= 0 || argument.IndexOf('"') >= 0 || argument.IndexOf(';') >= 0)
             {
-                return "\"" + argument.Replace("\"", "\\\"") + "\"";
+                var escaped = argument.Replace("\"", "\\\"");
+
+                // A trailing backslash would escape the closing quote (e.g. "C:\dir\"), so double it.
+                int trailing = argument.Length - argument.TrimEnd('\\').Length;
+                if (trailing > 0)
+                    escaped += new string('\\', trailing);
+
+                return "\"" + escaped + "\"";
             }
 
             return argument;
