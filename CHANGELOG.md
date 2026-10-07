@@ -5,6 +5,12 @@ All notable changes to **EF Core Helper for Visual Studio** will be documented i
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.8] - 2026-10-07
+
+### Fixed
+- **Truncated CLI Output**: the runner now waits for stdout/stderr to be fully drained after the process exits, so trailing output and error lines are no longer lost.
+- **Trailing Backslash in Paths**: quoted arguments ending in `\` (e.g. `"C:\My Projects\"`) no longer escape the closing quote and break generated commands.
+
 ## [1.0.7] - 2026-09-12
 
 ### Added

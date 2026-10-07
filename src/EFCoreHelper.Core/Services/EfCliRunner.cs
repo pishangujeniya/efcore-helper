@@ -141,6 +141,9 @@ namespace EFCoreHelper.Core.Services
                     try
                     {
                         int exitCode = await tcs.Task.ConfigureAwait(false);
+
+                        // Exited can fire before async stdout/stderr are fully drained; wait for EOF.
+                        await Task.Run(() => process.WaitForExit()).ConfigureAwait(false);
                         stopwatch.Stop();
 
                         string outText = outputBuilder.ToString();
